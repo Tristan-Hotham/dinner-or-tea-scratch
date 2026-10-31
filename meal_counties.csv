@@ -1,0 +1,89 @@
+county,nation,region,n,n_dinner,n_tea,n_supper,share_dinner,share_tea,share_supper,top,tea_lo95,tea_hi95
+Aberdeen City,Scotland,Scotland,23,8,12,3,0.3478,0.5217,0.1304,tea,0.3059,0.7318
+Aberdeenshire,Scotland,Scotland,32,10,11,11,0.3125,0.3438,0.3438,tea,0.1857,0.5319
+Angus,Scotland,Scotland,17,2,11,4,0.1176,0.6471,0.2353,tea,0.3833,0.8579
+Argyll and Bute,Scotland,Scotland,8,4,4,0,,,,,,
+Bedfordshire,England,East of England,85,69,11,5,0.8118,0.1294,0.0588,dinner,0.0664,0.2198
+Berkshire,England,South East,118,88,24,6,0.7458,0.2034,0.0508,dinner,0.1349,0.2873
+Bristol,England,South West,45,26,15,4,0.5778,0.3333,0.0889,dinner,0.2,0.4895
+Buckinghamshire,England,South East,131,102,22,7,0.7786,0.1679,0.0534,dinner,0.1083,0.2431
+Cambridgeshire,England,East of England,147,93,45,9,0.6327,0.3061,0.0612,dinner,0.2328,0.3874
+Cheshire,England,North West,429,111,313,5,0.2587,0.7296,0.0117,tea,0.6849,0.7711
+City of Edinburgh,Scotland,Scotland,54,31,22,1,0.5741,0.4074,0.0185,dinner,0.2757,0.5497
+Clackmannanshire,Scotland,Scotland,3,1,2,0,,,,,,
+Clwyd,Wales,Wales,149,41,107,1,0.2752,0.7181,0.0067,tea,0.6387,0.7887
+Cornwall,England,South West,37,23,13,1,0.6216,0.3514,0.027,dinner,0.2021,0.5254
+Cumbria,England,North West,121,26,88,7,0.2149,0.7273,0.0579,tea,0.6388,0.8043
+Derbyshire,England,East Midlands,299,84,212,3,0.2809,0.709,0.01,tea,0.654,0.7599
+Devon,England,South West,123,70,43,10,0.5691,0.3496,0.0813,dinner,0.2658,0.4408
+Dorset,England,South West,75,61,12,2,0.8133,0.16,0.0267,dinner,0.0855,0.2628
+Dumfries and Galloway,Scotland,Scotland,15,8,7,0,0.5333,0.4667,0.0,dinner,0.2127,0.7341
+Dundee City,Scotland,Scotland,2,0,2,0,,,,,,
+Durham,England,North East,200,44,153,3,0.22,0.765,0.015,tea,0.7,0.8219
+Dyfed,Wales,Wales,34,15,15,4,0.4412,0.4412,0.1176,dinner,0.2719,0.6211
+East Ayrshire,Scotland,Scotland,6,6,0,0,,,,,,
+East Dunbartonshire,Scotland,Scotland,18,17,0,1,0.9444,0.0,0.0556,dinner,0.0,0.1853
+East Lothian,Scotland,Scotland,8,4,3,1,,,,,,
+East Renfrewshire,Scotland,Scotland,3,3,0,0,,,,,,
+East Riding of Yorkshire,England,Yorkshire and The Humber,163,29,132,2,0.1779,0.8098,0.0123,tea,0.741,0.867
+East Sussex,England,South East,118,96,16,6,0.8136,0.1356,0.0508,dinner,0.0795,0.2108
+Essex,England,East of England,235,200,29,6,0.8511,0.1234,0.0255,dinner,0.0842,0.1724
+Falkirk,Scotland,Scotland,16,12,3,1,0.75,0.1875,0.0625,dinner,0.0405,0.4565
+Fife,Scotland,Scotland,34,17,16,1,0.5,0.4706,0.0294,dinner,0.2978,0.6487
+Glasgow City,Scotland,Scotland,45,33,11,1,0.7333,0.2444,0.0222,dinner,0.1288,0.3954
+Gloucestershire,England,South West,163,78,72,13,0.4785,0.4417,0.0798,dinner,0.3641,0.5215
+Greater London,England,London,877,760,58,59,0.8666,0.0661,0.0673,dinner,0.0506,0.0847
+Greater Manchester,England,North West,1803,507,1263,33,0.2812,0.7005,0.0183,tea,0.6788,0.7216
+Gwent,Wales,Wales,56,25,27,4,0.4464,0.4821,0.0714,tea,0.3466,0.6197
+Gwynedd,Wales,Wales,23,9,10,4,0.3913,0.4348,0.1739,tea,0.2319,0.6551
+Hampshire,England,South East,244,186,42,16,0.7623,0.1721,0.0656,dinner,0.127,0.2255
+Herefordshire,England,West Midlands,31,11,18,2,0.3548,0.5806,0.0645,tea,0.3908,0.7545
+Hertfordshire,England,East of England,218,192,20,6,0.8807,0.0917,0.0275,dinner,0.0569,0.1381
+Highland,Scotland,Scotland,35,23,9,3,0.6571,0.2571,0.0857,dinner,0.1249,0.4326
+Inverclyde,Scotland,Scotland,8,3,5,0,,,,,,
+Isle of Wight,England,South East,5,2,3,0,,,,,,
+Kent,England,South East,207,165,35,7,0.7971,0.1691,0.0338,dinner,0.1207,0.2272
+Lancashire,England,North West,846,156,677,13,0.1844,0.8002,0.0154,tea,0.7717,0.8267
+Leicestershire,England,East Midlands,153,110,40,3,0.719,0.2614,0.0196,dinner,0.1938,0.3385
+Lincolnshire,England,East Midlands,164,45,114,5,0.2744,0.6951,0.0305,tea,0.6185,0.7645
+Merseyside,England,North West,567,123,434,10,0.2169,0.7654,0.0176,tea,0.7283,0.7997
+Mid Glamorgan,Wales,Wales,27,14,12,1,0.5185,0.4444,0.037,dinner,0.2548,0.6467
+Midlothian,Scotland,Scotland,12,2,9,1,0.1667,0.75,0.0833,tea,0.4281,0.9451
+Moray,Scotland,Scotland,10,4,6,0,0.4,0.6,0.0,tea,0.2624,0.8784
+Na h-Eileanan Siar,Scotland,Scotland,6,5,1,0,,,,,,
+Norfolk,England,East of England,89,46,37,6,0.5169,0.4157,0.0674,dinner,0.3121,0.5251
+North Ayrshire,Scotland,Scotland,14,10,3,1,0.7143,0.2143,0.0714,dinner,0.0466,0.508
+North Lanarkshire,Scotland,Scotland,24,23,1,0,0.9583,0.0417,0.0,dinner,0.0011,0.2112
+North Yorkshire,England,Yorkshire and The Humber,390,99,280,11,0.2538,0.7179,0.0282,tea,0.6705,0.7621
+Northamptonshire,England,East Midlands,147,109,30,8,0.7415,0.2041,0.0544,dinner,0.1421,0.2783
+Northern Ireland,Northern Ireland,Northern Ireland,220,173,43,4,0.7864,0.1955,0.0182,dinner,0.1452,0.2541
+Northumberland,England,North East,90,23,63,4,0.2556,0.7,0.0444,tea,0.5943,0.7921
+Nottinghamshire,England,East Midlands,254,133,114,7,0.5236,0.4488,0.0276,dinner,0.3866,0.5122
+Orkney Islands,Scotland,Scotland,5,3,2,0,,,,,,
+Oxfordshire,England,South East,116,66,30,20,0.569,0.2586,0.1724,dinner,0.1818,0.3482
+Perth and Kinross,Scotland,Scotland,18,8,10,0,0.4444,0.5556,0.0,tea,0.3076,0.7847
+Powys,Wales,Wales,38,13,23,2,0.3421,0.6053,0.0526,tea,0.4339,0.7596
+Renfrewshire,Scotland,Scotland,17,13,2,2,0.7647,0.1176,0.1176,dinner,0.0146,0.3644
+Rutland,England,East Midlands,2,1,1,0,,,,,,
+Scottish Borders,Scotland,Scotland,13,7,6,0,0.5385,0.4615,0.0,dinner,0.1922,0.7487
+Shetland Islands,Scotland,Scotland,3,0,3,0,,,,,,
+Shropshire,England,West Midlands,106,44,57,5,0.4151,0.5377,0.0472,tea,0.4382,0.6351
+Somerset,England,South West,138,65,59,14,0.471,0.4275,0.1014,dinner,0.3437,0.5145
+South Ayrshire,Scotland,Scotland,6,5,1,0,,,,,,
+South Glamorgan,Wales,Wales,63,29,33,1,0.4603,0.5238,0.0159,tea,0.3941,0.6512
+South Lanarkshire,Scotland,Scotland,25,22,3,0,0.88,0.12,0.0,dinner,0.0255,0.3122
+South Yorkshire,England,Yorkshire and The Humber,343,67,271,5,0.1953,0.7901,0.0146,tea,0.7431,0.832
+Staffordshire,England,West Midlands,237,72,160,5,0.3038,0.6751,0.0211,tea,0.6115,0.7343
+Stirling,Scotland,Scotland,15,11,4,0,0.7333,0.2667,0.0,dinner,0.0779,0.551
+Suffolk,England,East of England,106,68,34,4,0.6415,0.3208,0.0377,dinner,0.2334,0.4184
+Surrey,England,South East,141,103,24,14,0.7305,0.1702,0.0993,dinner,0.1122,0.2426
+Tyne and Wear,England,North East,273,55,216,2,0.2015,0.7912,0.0073,tea,0.7381,0.8379
+Warwickshire,England,West Midlands,103,65,33,5,0.6311,0.3204,0.0485,dinner,0.2318,0.4196
+West Dunbartonshire,Scotland,Scotland,3,3,0,0,,,,,,
+West Glamorgan,Wales,Wales,33,15,16,2,0.4545,0.4848,0.0606,tea,0.308,0.6646
+West Lothian,Scotland,Scotland,17,16,1,0,0.9412,0.0588,0.0,dinner,0.0015,0.2869
+West Midlands,England,West Midlands,322,189,126,7,0.587,0.3913,0.0217,dinner,0.3377,0.447
+West Sussex,England,South East,114,85,23,6,0.7456,0.2018,0.0526,dinner,0.1324,0.2872
+West Yorkshire,England,Yorkshire and The Humber,536,111,416,9,0.2071,0.7761,0.0168,tea,0.7384,0.8107
+Wiltshire,England,South West,137,86,35,16,0.6277,0.2555,0.1168,dinner,0.1848,0.337
+Worcestershire,England,West Midlands,116,47,67,2,0.4052,0.5776,0.0172,tea,0.4824,0.6687

@@ -1,0 +1,148 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\newfontfamily\headfont{Inter}[UprightFont=*-ExtraBold,BoldFont=*-ExtraBold,Extension=.otf,Path=/usr/share/fonts/opentype/inter/]
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{graphicx,booktabs,float,caption,array,xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage[round]{natbib}
+\usepackage{setspace}
+\setstretch{1.05}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\titleformat{\section}{\headfont\Large}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\headfont\large}{\thesubsection}{0.8em}{}
+\captionsetup{font=small,labelfont=bf}
+\urlstyle{same}
+\hypersetup{pdftitle={Dinner, Tea or Supper? What Britain Calls Its Evening Meal},pdfauthor={Tristan Hotham}}
+
+\begin{document}
+\begin{center}
+{\Large\bfseries Dinner, Tea or Supper?\par}
+\vspace{0.4em}
+{\large What Britain calls its evening meal: mapping {{survey.n|int}} answers\\from the Our Dialects survey\par}
+\vspace{1.2em}
+{\large Tristan Hotham\par}
+\vspace{0.3em}
+{\small Independent researcher\\
+ORCID: 0000-0003-4931-9349\\
+DOI: \href{https://doi.org/[[DOI]]}{https://doi.org/[[DOI]]}\par}
+\vspace{0.8em}
+2026
+\end{center}
+
+\begin{quote}
+\small
+\begin{center}\textbf{Abstract}\end{center}
+The evening meal has three names in British English: dinner, tea and supper. I map {{survey.n|int}} answers to the question ``what do you call your evening meal?'' from the Our Dialects survey ({{survey.year_min|raw}} to {{survey.year_max|raw}}), each placed at a postcode district with the respondent's age, gender and year of answer. Answers were smoothed with a Gaussian kernel whose width ({{smoothing.cv_best_km|int}} km) was chosen by cross-validation, and the ``tea line'' was drawn where the smoothed shares of tea and dinner are equal. The divide is sharp: {{band.North.share.tea|pct0}} of answers from the north of England say tea and {{band.South.share.dinner|pct0}} of answers from the south say dinner, with the Midlands split evenly. Wales leans to tea ({{nation.Wales.share.tea|pct0}}); Scotland ({{nation.Scotland.share.dinner|pct0}}) and Northern Ireland ({{nation.Northern Ireland.share.dinner|pct0}}) to dinner. In logistic regressions, younger respondents in the south of England are more likely to say dinner (odds ratio {{model.age_by_band.South.or|f2}} per decade of age, {{x_p_south}}), but there is no age gradient in the north ({{model.age_by_band.North.or|f2}}, {{x_p_north}}), and no rise in dinner across twelve survey years. Supper ({{survey.share.supper|pct1}}) is a word of older, southern respondents. Reweighted to regional populations, the survey reproduces YouGov's 2018 figures for England within a few points. The survey asks only about the evening meal, so the northern use of dinner for the midday meal is described from the literature rather than measured.
+
+\textbf{Keywords:} dialect; British English; dialect geography; dinner; tea; supper; meal names; apparent time; Our Dialects; mapping
+\end{quote}
+
+\section{Introduction}
+Few words divide Britain as cleanly as the name of the evening meal. In much of the north of England, the Midlands and Wales the cooked evening meal is tea, the main meal of the day is dinner and is eaten at midday, and supper is a snack before bed. In the south, the evening meal is dinner, the midday meal is lunch, and tea is a drink with a biscuit in the afternoon. The Oxford English Dictionary records the northern sense directly: tea is ``a light meal in the late afternoon, but locally in the U.K. (esp. northern) \ldots{} a cooked evening meal'' \citep{oed}. The choice is often read as a marker of class as well as region \citep{fox}.
+
+This paper maps the evening meal from the largest public set of individual answers, the Our Dialects survey run from the University of Manchester \citep{ourdialects}, which has asked the question since {{survey.year_min|raw}}. \citet{mackenzie} have mapped tea against dinner from the same survey and set it beside the mid twentieth century Survey of English Dialects \citep{sed}. I add four things: a smoothed map with a cross-validated kernel and an explicit tea line; models of age, gender, survey year and region; the geography and age profile of supper; and a check against YouGov's 2018 poll of England \citep{yougov}. The work is a companion to a study of bread roll words from the same survey \citep{rolls}. An interactive version with a ``near you'' search is at \url{{{meta.page|raw}}}.
+
+\section{Data}
+\textbf{Survey answers.} The Our Dialects meal map was read from the project's public web map in 2026. It holds {{survey.n_raw|int}} answers, each with a point at the respondent's postcode district (slightly jittered), the postcode district itself, the year of answer ({{survey.year_min|raw}} to {{survey.year_max|raw}}), age, gender and the answer: dinner, tea or supper. The site's own legend reports the same total and shares (dinner 45.03\%, supper 3.56\%, tea 51.41\%). {{survey.outside_n|int}} answers from the Channel Islands and the Isle of Man were left out, leaving {{survey.n|int}}. The answers are \textcopyright{} the Our Dialects project and are not openly licensed: they are analysed here with credit and only aggregates with at least {{meta.min_n|int}} answers are published.
+
+\textbf{Who answered.} The survey is a volunteer online questionnaire. Its respondents are young (median age {{survey.age_median|int}}; {{survey.share_under25|pct0}} under 25) and northern: {{england_check.north_sample|pct0}} of English answers come from the three northern regions, which hold {{england_check.north_pop|pct0}} of England's population, and {{england_check.nw_sample|pct0}} from the North West alone (Table~\ref{tab:regions}). Women gave {{survey.gender.female|int}} answers and men {{survey.gender.male|int}}.
+
+\textbf{Geography and comparison figures.} Answers were placed in ONS regions and in counties (ceremonial counties in England, preserved counties in Wales, council areas in Scotland, Northern Ireland as one) using ONS boundaries \citep{ons_geo}. Regional populations are from the 2021 Census \citep{census}. YouGov's figures are quoted as published \citep{yougov}.
+
+{{TABLE_REGIONS}}
+
+\section{Methods}
+\textbf{Smoothing.} Answers were counted by word on a 2 km grid in British National Grid coordinates and smoothed with a Gaussian kernel, scaled so that each answer has weight one at its own spot. Each word's share is its smoothed count over the smoothed total, with a prior of one answer at the national shares. The kernel width was chosen by leave-one-cell-out prediction: each answer is predicted from the others with every answer in its own 2 km cell removed, and the mean log probability of the observed word is compared across widths of 4 to 32 km. It peaked at {{smoothing.cv_best_km|int}} km, although the curve is flat between 10 and 20 km. Where fewer than {{meta.min_n|int}} kernel-weighted answers were nearby, the width was increased to 24 or 32 km; to avoid rings where the width changes, the step needed at each cell was spread with a 26 km maximum filter and a light Gaussian blur and the shares interpolated between neighbouring widths. Cells that still had fewer than {{meta.min_n|int}} weighted answers were left blank, which leaves {{smoothing.covered_land_share|pct0}} of UK land mapped. Halving or doubling the width leaves the leading word unchanged at {{smoothing.same_lead_half|pct0}} and {{smoothing.same_lead_double|pct0}} of answer locations.
+
+\textbf{The tea line.} The tea line is the contour where the smoothed shares of tea and dinner are equal, kept where those are the two leading words; contours shorter than 12 km are dropped. The same rule gives short lines where supper overtakes.
+
+\textbf{Models.} For dinner against tea (supper answers left out, n = {{model.n|int}}) I fit logistic regressions of saying dinner on age (in decades, centred at 40), survey year (centred at 2018), gender (female, male, other or not given) and region, first for all answers and then separately for the north of England (North East, North West, Yorkshire and the Humber), the Midlands, the south (East of England, London, South East, South West), Scotland, Wales and Northern Ireland, with region effects inside each. A likelihood ratio test of an age by area interaction compares the slopes in the north, Midlands and south. A further model predicts supper against both other answers. Ages outside 10 to 90 were excluded ({{model.excluded_age|int}} answers). Survey-year trends are also shown with each year's answers reweighted to the overall mix of region and six age groups. Models were fitted with statsmodels \citep{statsmodels}.
+
+\textbf{Comparison with YouGov.} YouGov's 2018 figures are for adults in England. I took survey answers from people aged 18 and over in England and weighted each region's shares by its share of England's usual resident population in the 2021 Census.
+
+\section{Results}
+\subsection{The map and the tea line}
+Figure~\ref{fig:map} shows the smoothed map. Tea leads across the north of England from the Scottish border to the Trent and across most of Wales; dinner leads across the south and east of England, the Scottish central belt and Northern Ireland. Of all answers, {{band.North.share.tea|pct0}} of the {{band.North.n|int}} from the north of England say tea and {{band.South.share.dinner|pct0}} of the {{band.South.n|int}} from the south say dinner. The Midlands ({{band.Midlands.n|int}} answers) are split almost exactly: {{band.Midlands.share.tea|pct0}} tea and {{band.Midlands.share.dinner|pct0}} dinner.
+
+The tea line in England runs north from the Severn estuary past Gloucester and Worcester, swings round the west and north of Birmingham, then heads east past Derby and Nottingham, with Leicester on the dinner side, to the Wash. Along a north to south profile of England (Figure~\ref{fig:profile}) the smoothed share of tea rises from about a quarter across the southern counties to about three quarters north of the Mersey and the Humber, crossing one half in the band around Stoke, Derby and Nottingham. In Wales, {{nation.Wales.share.tea|pct0}} of {{nation.Wales.n|int}} answers say tea. In Scotland ({{nation.Scotland.n|int}} answers) the map is broad brush: Glasgow and the west are firmly dinner (smoothed {{x_glasgow_dinner}}), while Edinburgh, Fife and the north-east are closer to even or lean to tea. Northern Ireland ({{nation.Northern Ireland.n|int}} answers) is {{nation.Northern Ireland.share.dinner|pct0}} dinner. Across the UK, {{lines.share_answers_tea_side|pct0}} of answers come from places on the tea side of the line.
+
+\begin{figure}[tbp]\centering\includegraphics[width=.78\textwidth]{f_map.png}
+\caption{Tea against dinner, smoothed. Brown: tea leads; blue: dinner leads; paler colours mark a closer split. The black line is the tea line, where the smoothed shares are equal. Blank areas have fewer than {{meta.min_n|int}} weighted answers nearby.}\label{fig:map}\end{figure}
+
+\begin{figure}[tbp]\centering\includegraphics[width=.86\textwidth]{f_profile.png}
+\caption{Mean smoothed share of each word in 50 km bands of northing across England (bands with at least 50 answers).}\label{fig:profile}\end{figure}
+
+\subsection{Regions and counties}
+Every northern English region has a tea majority above 70 per cent and every southern region a dinner majority (Figure~\ref{fig:regions}). Among the {{counties.n30|int}} counties with at least 30 answers, tea leads in {{counties.n30_tea_lead|int}} and dinner in {{counties.n30_dinner_lead|int}}. The most tea counties are the East Riding of Yorkshire ({{x_eryorks_tea}}) and Lancashire ({{local.lancs_share.tea|pct0}} of {{local.lancs_n|int}}); the least are Greater London ({{london.share.tea|pct0}} tea, {{london.share.dinner|pct0}} dinner) and Hertfordshire. The Our Dialects site text gives London as 89\% dinner and 3\% tea, apparently from an earlier count.
+
+\begin{figure}[tbp]\centering\includegraphics[width=.86\textwidth]{f_regions.png}
+\caption{Share of answers giving each word, by region (tea, supper, dinner from left), with numbers of answers.}\label{fig:regions}\end{figure}
+
+\subsection{Age, survey year and gender}
+Region dominates. A model with region alone has a McFadden pseudo R\textsuperscript{2} of {{model.pseudo_r2_region_only|f3}}, against {{model.main.pseudo_r2|f3}} with age, year and gender added and {{model.pseudo_r2_no_region|f3}} for age, year and gender without region (Table~\ref{tab:model}). Relative to the North West, the odds of dinner are {{model.main.regions.London.or|f0}} times higher in London and {{model.main.regions.South East.or|f0}} times higher in the South East.
+
+Age matters only in some places (Figure~\ref{fig:age}, Table~\ref{tab:age}). In the south of England, {{x_south_dinner_young}} of answers from people aged 18 to 24 say dinner against {{x_south_dinner_older}} from those aged 50 to 64; the odds of dinner fall by a factor of {{model.age_by_band.South.or|f2}} per decade of age (95\% interval {{model.age_by_band.South.lo|f2}} to {{model.age_by_band.South.hi|f2}}, {{x_p_south}}). The slope is weaker in the Midlands ({{model.age_by_band.Midlands.or|f2}}, {{x_p_mid}}) and in Scotland ({{model.age_by_band.Scotland.or|f2}}, {{x_p_scot}}), and absent in the north of England ({{model.age_by_band.North.or|f2}}, 95\% interval {{model.age_by_band.North.lo|f2}} to {{model.age_by_band.North.hi|f2}}, {{x_p_north}}), Wales and Northern Ireland. The slopes in the north and south differ (likelihood ratio {{model.interaction.lr|f1}} on 2 degrees of freedom, {{x_p_inter}}). From the southern model, the predicted share saying dinner is {{model.age_by_band.South.pred.20|pct0}} at age 20 and {{model.age_by_band.South.pred.60|pct0}} at age 60; in the north it is {{model.age_by_band.North.pred.20|pct0}} and {{model.age_by_band.North.pred.60|pct0}}.
+
+Read in apparent time, this suggests that dinner is still spreading in the south and Midlands, where it is already the majority word, but not making inroads into the north. Two other readings fit equally well: people may change words over the life course, and age is entangled with other things the survey does not record, such as class and whether people have moved. Real time gives no support to a spread. Reweighted to the same mix of region and age, dinner's share by survey year ranges between {{year.std_dinner_min|pct0}} and {{year.std_dinner_max|pct0}} with no upward trend (Figure~\ref{fig:year}), and in the full model the odds of dinner fall slightly with survey year ({{model.main.yr.or|f3}} per year, {{x_p_yr}}). Twelve years is a short window, and the kinds of people answering changed over the period (the median age of respondents rose from 21 to 28), so this is weak evidence either way.
+
+Gender makes no difference: {{gender.female.share.tea|pct0}} of women and {{gender.male.share.tea|pct0}} of men say tea (chi-squared p = {{gender.chi2_p_fm|f2}}; in the model the odds ratio for men is {{model.main.male.or|f2}}, {{x_p_male}}). Respondents who gave another gender or none said dinner more often ({{model.main.other.or|f2}}, {{x_p_other}}), on {{gender.other or not given.n|int}} answers.
+
+{{TABLE_MODEL}}
+
+\begin{figure}[tbp]\centering\includegraphics[width=.92\textwidth]{f_age.png}
+\caption{Share saying dinner by age group, with 95\% exact binomial intervals, in the south, Midlands and north of England. Odds ratios per decade from separate logistic regressions with region, year and gender.}\label{fig:age}\end{figure}
+
+{{TABLE_AGE}}
+
+\begin{figure}[tbp]\centering\includegraphics[width=.86\textwidth]{f_year.png}
+\caption{Share saying dinner and tea by survey year, raw and reweighted to the overall mix of region and age group. Answers per year below each year.}\label{fig:year}\end{figure}
+
+\subsection{Supper}
+Supper is given in {{survey.count.supper|int}} answers ({{survey.share.supper|pct1}}). It is most common in the South West ({{region.South West.share.supper|pct1}}), the South East ({{region.South East.share.supper|pct1}}), London ({{region.London.share.supper|pct1}}) and Scotland ({{region.Scotland.share.supper|pct1}}), and least common in the north of England and Northern Ireland (under 2\%). It rises steeply with age (Figure~\ref{fig:supper}): among southern respondents aged 65 and over {{x_supper_old_south}} say supper, against {{x_supper_young_south}} at 18 to 24, and across the UK the odds of supper rise by {{model.supper.age10.or|f2}} per decade ({{x_p_supage}}). Supper leads the smoothed map only in a small area of Aberdeenshire, where {{x_aber_supper}} of {{x_aber_n}} answers say it.
+
+\begin{figure}[tbp]\centering\includegraphics[width=.92\textwidth]{f_supper.png}
+\caption{Left: smoothed share saying supper (dashed lines: where supper overtakes). Right: share saying supper by age group.}\label{fig:supper}\end{figure}
+
+\subsection{Comparison with YouGov}
+YouGov's 2018 survey of more than 42,000 adults in England found {{x_yg_dinner}} dinner, {{x_yg_tea}} tea and {{x_yg_supper}} supper \citep{yougov}. The raw survey answers from England ({{england_check.raw.dinner|pct0}} dinner, {{england_check.raw.tea|pct0}} tea) are far from this because of who answered. Weighted to regional populations, the adult answers give {{england_check.weighted.dinner|pct1}} dinner, {{england_check.weighted.tea|pct1}} tea and {{england_check.weighted.supper|pct1}} supper, within five points of YouGov on every word (Figure~\ref{fig:yougov}). YouGov's three most dinner counties (East Sussex, Essex, Kent) rank 4th, 3rd and 7th for dinner of the {{counties.n_eng30|int}} English counties here with at least 30 answers, and its three most tea counties (Greater Manchester, Tyne and Wear, Merseyside) rank 12th, 3rd and 6th for tea. YouGov also reported social grade: in the north {{x_yg_nmc}} of middle-class and {{x_yg_nwc}} of working-class respondents said tea; in the south {{x_yg_smc}} and {{x_yg_swc}} said dinner. The Our Dialects survey records no class measure.
+
+\begin{figure}[tbp]\centering\includegraphics[width=.86\textwidth]{f_yougov.png}
+\caption{England: YouGov 2018 against the survey, raw and with adult answers reweighted to regional populations (2021 Census).}\label{fig:yougov}\end{figure}
+
+\section{Discussion}
+The tea line is one of the clearest boundaries in British dialect geography, and it crosses England close to where the better known north and south divides in vowels run, from the Severn to the Wash. The age pattern suggests that the boundary is stable in the north and that the south is consolidating rather than advancing: younger southerners are more consistently ``dinner'', but younger northerners are as ``tea'' as their parents. That fits a picture in which tea is not a fading rural word but the ordinary word of the industrial north, tied to the working day and to the midday dinner of school and work. It also fits the class reading: a southern, middle-class dinner has not displaced northern tea in twenty-first century answers.
+
+The survey cannot see the other half of the system. Where tea is the evening meal, dinner is usually the midday meal, and supper a late snack; the survey asks only about the evening. In the Ribble Valley in Lancashire, for example, {{local.ribble_share.tea|pct0}} of {{local.ribble_n|int}} answers say tea, and local usage of dinner for the midday meal is well attested, but nothing here measures it.
+
+\section{Limitations}
+The survey is a volunteer sample, heavily northern and young; maps are sharpest where it was popular and blank where it was not. Each person chose one of three words for the evening meal, which flattens people who use more than one, and there is no question about the midday meal. Answers are placed at postcode districts and may record where people live rather than where they grew up. Age differences in a single survey are consistent with change in progress but also with life-course change and with unmeasured class and mobility. Scotland, Wales and Northern Ireland have few answers. The YouGov comparison uses only region for weighting, not age, sex or class. All counts are for the answers on the public map in 2026.
+
+\section{Conclusion}
+Tea is the evening meal across the north of England and most of Wales; dinner across the south, the Scottish central belt and Northern Ireland; and the line between them runs across the Midlands from the Severn to the Wash. Younger southerners say dinner more consistently than older ones, but there is no sign of dinner moving north, and none of it rising across twelve years of answers. Supper is the word of older people in the south.
+
+\section*{Data and code availability}
+The interactive map is at \url{{{meta.page|raw}}}. Code and aggregate data (hexagons, counties, regions and postcode areas with at least {{meta.min_n|int}} answers, the tea line, and results) are at \url{{{meta.repo|raw}}} and archived with this paper at \url{https://doi.org/[[DOI]]}. The individual survey answers are not redistributed; they belong to the Our Dialects project. Derived data and text are released under CC BY 4.0, code under the MIT licence.
+
+\section*{AI statement}
+I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.
+
+\begin{thebibliography}{9}
+\bibitem[Fox(2004)]{fox} Fox, K. (2004) \emph{Watching the English: The Hidden Rules of English Behaviour}. London: Hodder and Stoughton.
+\bibitem[Hotham(2026)]{rolls} Hotham, T. (2026) Barm, bap, cob or roll? Mapping Britain's bread roll lines from 20,000 survey answers. Zenodo. \url{https://doi.org/10.5281/zenodo.23691943}
+\bibitem[MacKenzie et al.(2022)]{mackenzie} MacKenzie, L., Bailey, G. and Turton, D. (2022) Towards an updated dialect atlas of British English. \emph{Journal of Linguistic Geography}. Lancaster University eprint 168083, \url{https://eprints.lancs.ac.uk/id/eprint/168083/}
+\bibitem[Office for National Statistics(2022)]{census} Office for National Statistics (2022) Census 2021: population and household estimates, England and Wales. Open Government Licence v3.0.
+\bibitem[Office for National Statistics(2023)]{ons_geo} Office for National Statistics (2023) Regions, counties and local authority boundaries. Open Government Licence v3.0. Contains OS data \textcopyright{} Crown copyright and database right.
+\bibitem[Orton and Dieth(1962)]{sed} Orton, H. and Dieth, E. (eds) (1962 to 1971) \emph{Survey of English Dialects}. Leeds: E. J. Arnold.
+\bibitem[Our Dialects(2026)]{ourdialects} Our Dialects (2026) What do you call your evening meal? Our Dialects map, University of Manchester. \url{https://www.ourdialects.uk/maps/meal/}
+\bibitem[Oxford English Dictionary(2013)]{oed} Oxford English Dictionary (2013) tea, n. Oxford University Press.
+\bibitem[Seabold and Perktold(2010)]{statsmodels} Seabold, S. and Perktold, J. (2010) statsmodels: econometric and statistical modeling with Python. \emph{Proceedings of the 9th Python in Science Conference}.
+\bibitem[YouGov(2018)]{yougov} YouGov (2018) Dinner time or tea time? It depends where you live. \url{https://yougov.com/en-gb/articles/20826-dinner-time-or-tea-time-it-depends-where-you-live}
+\end{thebibliography}
+\end{document}

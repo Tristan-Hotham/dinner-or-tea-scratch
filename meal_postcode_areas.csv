@@ -1,0 +1,122 @@
+area,n,county,region,lat,lon,n_dinner,share_dinner,n_tea,share_tea,n_supper,share_supper
+AB,53,Aberdeenshire,Scotland,57.227,-2.283,17.0,0.3208,22.0,0.4151,14.0,0.2642
+AL,34,Hertfordshire,East of England,51.777,-0.306,28.0,0.8235,5.0,0.1471,1.0,0.0294
+B,285,West Midlands,West Midlands,52.461,-1.878,179.0,0.6281,101.0,0.3544,5.0,0.0175
+BA,93,Somerset,South West,51.248,-2.412,46.0,0.4946,33.0,0.3548,14.0,0.1505
+BB,330,Lancashire,North West,53.797,-2.305,51.0,0.1545,277.0,0.8394,2.0,0.0061
+BD,131,West Yorkshire,Yorkshire and The Humber,53.828,-1.816,25.0,0.1908,103.0,0.7863,3.0,0.0229
+BH,44,Dorset,South West,50.765,-1.885,37.0,0.8409,6.0,0.1364,1.0,0.0227
+BL,201,Greater Manchester,North West,53.591,-2.405,43.0,0.2139,151.0,0.7512,7.0,0.0348
+BN,120,East Sussex,South East,50.847,-0.137,92.0,0.7667,21.0,0.175,7.0,0.0583
+BR,36,Greater London,London,51.397,0.014,32.0,0.8889,2.0,0.0556,2.0,0.0556
+BS,118,Bristol,South West,51.462,-2.601,48.0,0.4068,61.0,0.5169,9.0,0.0763
+BT,220,Northern Ireland,Northern Ireland,54.621,-6.215,173.0,0.7864,43.0,0.1955,4.0,0.0182
+CA,70,Cumbria,North West,54.671,-3.246,18.0,0.2571,46.0,0.6571,6.0,0.0857
+CB,101,Cambridgeshire,East of England,52.211,0.196,69.0,0.6832,22.0,0.2178,10.0,0.099
+CF,108,South Glamorgan,Wales,51.541,-3.318,50.0,0.463,55.0,0.5093,3.0,0.0278
+CH,251,Merseyside,North West,53.302,-3.057,77.0,0.3068,172.0,0.6853,2.0,0.008
+CM,87,Essex,East of England,51.772,0.411,75.0,0.8621,10.0,0.1149,2.0,0.023
+CO,64,Essex,East of England,51.908,0.91,47.0,0.7344,16.0,0.25,1.0,0.0156
+CR,39,Greater London,London,51.343,-0.09,35.0,0.8974,3.0,0.0769,1.0,0.0256
+CT,50,Kent,South East,51.25,1.169,40.0,0.8,9.0,0.18,1.0,0.02
+CV,114,Warwickshire,West Midlands,52.39,-1.48,69.0,0.6053,38.0,0.3333,7.0,0.0614
+CW,94,Cheshire,North West,53.157,-2.435,21.0,0.2234,72.0,0.766,1.0,0.0106
+DA,37,Kent,South East,51.438,0.225,33.0,0.8919,4.0,0.1081,0.0,0.0
+DD,24,Angus,Scotland,56.577,-2.934,5.0,0.2083,15.0,0.625,4.0,0.1667
+DE,160,Derbyshire,East Midlands,52.938,-1.55,74.0,0.4625,83.0,0.5188,3.0,0.0187
+DG,15,Dumfries and Galloway,Scotland,55.044,-3.902,8.0,0.5333,7.0,0.4667,0.0,0.0
+DH,67,Durham,North East,54.814,-1.615,15.0,0.2239,50.0,0.7463,2.0,0.0299
+DL,101,Durham,North East,54.567,-1.644,30.0,0.297,70.0,0.6931,1.0,0.0099
+DN,135,Lincolnshire,Yorkshire and The Humber,53.545,-0.728,21.0,0.1556,112.0,0.8296,2.0,0.0148
+DT,23,Dorset,South West,50.736,-2.537,17.0,0.7391,4.0,0.1739,2.0,0.087
+DY,65,West Midlands,West Midlands,52.443,-2.17,24.0,0.3692,41.0,0.6308,0.0,0.0
+E,77,Greater London,London,51.556,-0.009,66.0,0.8571,7.0,0.0909,4.0,0.0519
+EC,2,Greater London,London,51.519,-0.097,,,,,,
+EH,95,City of Edinburgh,Scotland,55.925,-3.241,55.0,0.5789,37.0,0.3895,3.0,0.0316
+EN,54,Greater London,London,51.67,-0.083,52.0,0.963,2.0,0.037,0.0,0.0
+EX,53,Devon,South West,50.846,-3.67,27.0,0.5094,20.0,0.3774,6.0,0.1132
+FK,32,Falkirk,Scotland,56.106,-3.94,22.0,0.6875,9.0,0.2812,1.0,0.0312
+FY,137,Lancashire,North West,53.832,-3.005,31.0,0.2263,103.0,0.7518,3.0,0.0219
+G,95,Glasgow City,Scotland,55.881,-4.267,79.0,0.8316,14.0,0.1474,2.0,0.0211
+GL,121,Gloucestershire,South West,51.828,-2.189,67.0,0.5537,42.0,0.3471,12.0,0.0992
+GU,102,Surrey,South East,51.242,-0.722,75.0,0.7353,19.0,0.1863,8.0,0.0784
+HA,56,Greater London,London,51.596,-0.337,53.0,0.9464,2.0,0.0357,1.0,0.0179
+HD,62,West Yorkshire,Yorkshire and The Humber,53.634,-1.791,14.0,0.2258,48.0,0.7742,0.0,0.0
+HG,69,North Yorkshire,Yorkshire and The Humber,54.045,-1.591,26.0,0.3768,43.0,0.6232,0.0,0.0
+HP,81,Buckinghamshire,South East,51.714,-0.668,62.0,0.7654,14.0,0.1728,5.0,0.0617
+HR,31,Herefordshire,West Midlands,52.044,-2.737,11.0,0.3548,18.0,0.5806,2.0,0.0645
+HS,6,Na h-Eileanan Siar,Scotland,57.905,-6.988,,,,,,
+HU,113,East Riding of Yorkshire,Yorkshire and The Humber,53.794,-0.385,18.0,0.1593,94.0,0.8319,1.0,0.0088
+HX,40,West Yorkshire,Yorkshire and The Humber,53.735,-1.926,3.0,0.075,35.0,0.875,2.0,0.05
+IG,24,Greater London,London,51.576,0.078,21.0,0.875,2.0,0.0833,1.0,0.0417
+IP,88,Suffolk,East of England,52.156,1.151,58.0,0.6591,27.0,0.3068,3.0,0.0341
+IV,35,Highland,Scotland,57.565,-4.223,20.0,0.5714,12.0,0.3429,3.0,0.0857
+KA,25,North Ayrshire,Scotland,55.596,-4.671,20.0,0.8,4.0,0.16,1.0,0.04
+KT,75,Surrey,South East,51.369,-0.331,56.0,0.7467,10.0,0.1333,9.0,0.12
+KW,10,Highland,Scotland,58.779,-3.23,6.0,0.6,4.0,0.4,0.0,0.0
+KY,34,Fife,Scotland,56.138,-3.263,18.0,0.5294,15.0,0.4412,1.0,0.0294
+L,361,Merseyside,North West,53.45,-2.929,82.0,0.2271,272.0,0.7535,7.0,0.0194
+LA,103,Cumbria,North West,54.147,-2.884,12.0,0.1165,86.0,0.835,5.0,0.0485
+LD,13,Powys,Wales,52.304,-3.211,2.0,0.1538,10.0,0.7692,1.0,0.0769
+LE,151,Leicestershire,East Midlands,52.641,-1.139,108.0,0.7152,39.0,0.2583,4.0,0.0265
+LL,108,Clwyd,Wales,53.173,-3.557,33.0,0.3056,70.0,0.6481,5.0,0.0463
+LN,51,Lincolnshire,East Midlands,53.219,-0.337,22.0,0.4314,27.0,0.5294,2.0,0.0392
+LS,216,West Yorkshire,Yorkshire and The Humber,53.838,-1.547,60.0,0.2778,155.0,0.7176,1.0,0.0046
+LU,51,Bedfordshire,East of England,51.908,-0.508,44.0,0.8627,5.0,0.098,2.0,0.0392
+M,892,Greater Manchester,North West,53.474,-2.276,298.0,0.3341,577.0,0.6469,17.0,0.0191
+ME,67,Kent,South East,51.327,0.581,53.0,0.791,10.0,0.1493,4.0,0.0597
+MK,79,Buckinghamshire,South East,52.061,-0.648,62.0,0.7848,12.0,0.1519,5.0,0.0633
+ML,30,North Lanarkshire,Scotland,55.785,-3.902,27.0,0.9,3.0,0.1,0.0,0.0
+N,100,Greater London,London,51.594,-0.112,89.0,0.89,7.0,0.07,4.0,0.04
+NE,320,Tyne and Wear,North East,55.019,-1.628,69.0,0.2156,245.0,0.7656,6.0,0.0187
+NG,253,Nottinghamshire,East Midlands,53.005,-1.104,134.0,0.5296,109.0,0.4308,10.0,0.0395
+NN,136,Northamptonshire,East Midlands,52.3,-0.806,102.0,0.75,27.0,0.1985,7.0,0.0515
+NP,51,Gwent,Wales,51.706,-2.927,24.0,0.4706,24.0,0.4706,3.0,0.0588
+NR,80,Norfolk,East of England,52.631,1.355,40.0,0.5,35.0,0.4375,5.0,0.0625
+NW,84,Greater London,London,51.558,-0.194,72.0,0.8571,1.0,0.0119,11.0,0.131
+OL,308,Greater Manchester,North West,53.577,-2.123,88.0,0.2857,210.0,0.6818,10.0,0.0325
+OX,105,Oxfordshire,South East,51.776,-1.263,59.0,0.5619,29.0,0.2762,17.0,0.1619
+PA,31,Renfrewshire,Scotland,55.961,-4.763,19.0,0.6129,10.0,0.3226,2.0,0.0645
+PE,101,Cambridgeshire,East of England,52.622,-0.101,55.0,0.5446,44.0,0.4356,2.0,0.0198
+PH,15,Perth and Kinross,Scotland,56.649,-4.15,7.0,0.4667,8.0,0.5333,0.0,0.0
+PL,52,Devon,South West,50.425,-4.245,31.0,0.5962,21.0,0.4038,0.0,0.0
+PO,72,Hampshire,South East,50.821,-1.002,52.0,0.7222,17.0,0.2361,3.0,0.0417
+PR,261,Lancashire,North West,53.725,-2.767,57.0,0.2184,201.0,0.7701,3.0,0.0115
+RG,139,Berkshire,South East,51.412,-1.021,104.0,0.7482,25.0,0.1799,10.0,0.0719
+RH,74,West Sussex,South East,51.091,-0.173,52.0,0.7027,15.0,0.2027,7.0,0.0946
+RM,48,Greater London,London,51.544,0.233,43.0,0.8958,5.0,0.1042,0.0,0.0
+S,443,South Yorkshire,Yorkshire and The Humber,53.376,-1.446,89.0,0.2009,350.0,0.7901,4.0,0.009
+SA,66,Dyfed,Wales,51.748,-4.267,31.0,0.4697,28.0,0.4242,7.0,0.1061
+SE,101,Greater London,London,51.459,-0.037,87.0,0.8614,8.0,0.0792,6.0,0.0594
+SG,71,Hertfordshire,East of England,51.92,-0.121,61.0,0.8592,9.0,0.1268,1.0,0.0141
+SK,362,Greater Manchester,North West,53.373,-2.103,89.0,0.2459,269.0,0.7431,4.0,0.011
+SL,43,Berkshire,South East,51.521,-0.655,34.0,0.7907,8.0,0.186,1.0,0.0233
+SM,25,Greater London,London,51.365,-0.182,22.0,0.88,1.0,0.04,2.0,0.08
+SN,73,Wiltshire,South West,51.502,-1.9,46.0,0.6301,23.0,0.3151,4.0,0.0548
+SO,108,Hampshire,South East,50.96,-1.373,81.0,0.75,20.0,0.1852,7.0,0.0648
+SP,66,Wiltshire,South West,51.096,-1.843,46.0,0.697,11.0,0.1667,9.0,0.1364
+SR,40,Tyne and Wear,North East,54.882,-1.39,7.0,0.175,33.0,0.825,0.0,0.0
+SS,68,Essex,East of England,51.567,0.624,64.0,0.9412,2.0,0.0294,2.0,0.0294
+ST,125,Staffordshire,West Midlands,52.999,-2.168,19.0,0.152,106.0,0.848,0.0,0.0
+SW,109,Greater London,London,51.452,-0.184,90.0,0.8257,6.0,0.055,13.0,0.1193
+SY,72,Shropshire,West Midlands,52.693,-2.974,30.0,0.4167,40.0,0.5556,2.0,0.0278
+TA,37,Somerset,South West,51.076,-3.013,20.0,0.5405,17.0,0.4595,0.0,0.0
+TD,15,Scottish Borders,Scotland,55.619,-2.483,6.0,0.4,9.0,0.6,0.0,0.0
+TF,41,Shropshire,West Midlands,52.745,-2.46,15.0,0.3659,25.0,0.6098,1.0,0.0244
+TN,100,Kent,South East,51.106,0.457,82.0,0.82,15.0,0.15,3.0,0.03
+TQ,36,Devon,South West,50.466,-3.605,26.0,0.7222,7.0,0.1944,3.0,0.0833
+TR,18,Cornwall,South West,50.196,-5.259,8.0,0.4444,9.0,0.5,1.0,0.0556
+TS,138,North Yorkshire,North East,54.571,-1.206,28.0,0.2029,107.0,0.7754,3.0,0.0217
+TW,73,Greater London,London,51.449,-0.376,62.0,0.8493,6.0,0.0822,5.0,0.0685
+UB,20,Greater London,London,51.529,-0.413,17.0,0.85,2.0,0.1,1.0,0.05
+W,43,Greater London,London,51.506,-0.257,34.0,0.7907,3.0,0.0698,6.0,0.1395
+WA,329,Cheshire,North West,53.392,-2.582,64.0,0.1945,262.0,0.7964,3.0,0.0091
+WC,3,Greater London,London,51.517,-0.126,,,,,,
+WD,80,Hertfordshire,East of England,51.666,-0.432,72.0,0.9,5.0,0.0625,3.0,0.0375
+WF,119,West Yorkshire,Yorkshire and The Humber,53.687,-1.532,21.0,0.1765,96.0,0.8067,2.0,0.0168
+WN,201,Greater Manchester,North West,53.527,-2.603,17.0,0.0846,184.0,0.9154,0.0,0.0
+WR,61,Worcestershire,West Midlands,52.213,-2.173,23.0,0.377,36.0,0.5902,2.0,0.0328
+WS,46,Staffordshire,West Midlands,52.675,-1.961,22.0,0.4783,23.0,0.5,1.0,0.0217
+WV,50,West Midlands,West Midlands,52.584,-2.198,19.0,0.38,26.0,0.52,5.0,0.1
+YO,198,North Yorkshire,Yorkshire and The Humber,54.11,-0.807,39.0,0.197,151.0,0.7626,8.0,0.0404
+ZE,3,Shetland Islands,Scotland,60.448,-1.19,,,,,,

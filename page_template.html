@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dinner, Tea or Supper</title>
+<meta name="description" content="What Britain calls its evening meal: {{survey.n|int}} answers from the Our Dialects survey, smoothed into a map of dinner, tea and supper with the tea line, age, survey year and a check against YouGov.">
+<meta property="og:title" content="Dinner, tea or supper? What Britain calls its evening meal">
+<meta property="og:description" content="{{survey.n|int}} survey answers mapped: where the evening meal is tea, where it is dinner, and where the line between them runs.">
+<meta property="og:image" content="https://maps.tristanhotham.com/dinner-or-tea/header.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800;9..144,900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+/* Tablecloth cream, plate blue for dinner, brewed brown for tea, dusk violet for supper. */
+:root{
+  --bg:#F7F2E8; --panel:#F0E8D9; --fg:#24201B; --muted:#73695C; --rule:#E4DACA; --card:#FCF9F2; --border:#D6C9B2;
+  --hot:#B4552B; --w-dinner:#2E5E8C; --w-tea:#B4552B; --w-supper:#7A5A9E; --mid:#EFE6D3; --line:#1E1A16; --sea:#E3E5E2;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17150F; --panel:#211E17; --fg:#F1EADC; --muted:#AEA390; --rule:#38322A; --card:#1F1B15; --border:#4A4235;
+  --hot:#E0814F; --w-dinner:#6E9FD0; --w-tea:#E0814F; --w-supper:#A88BCB; --mid:#3A352C; --line:#F6EFE0; --sea:#15191B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17150F; --panel:#211E17; --fg:#F1EADC; --muted:#AEA390; --rule:#38322A; --card:#1F1B15; --border:#4A4235;
+  --hot:#E0814F; --w-dinner:#6E9FD0; --w-tea:#E0814F; --w-supper:#A88BCB; --mid:#3A352C; --line:#F6EFE0; --sea:#15191B; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 18px/1.62 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+.wrap{max-width:680px;margin:0 auto;padding-block:28px 64px}
+.wrap .bleed{width:min(1080px,calc(100vw - 32px));margin-left:calc((100% - min(1080px,100vw - 32px))/2);margin-right:0}
+a{color:inherit;text-decoration-color:var(--hot);text-underline-offset:3px}
+.kicker{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kicker b{background:var(--hot);color:#fff;padding:5px 8px;font-weight:500}
+header.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;align-items:end;border-bottom:6px double var(--fg);padding-bottom:22px;margin-top:18px}
+h1{font:900 clamp(48px,12vw,100px)/.9 var(--display);letter-spacing:-.02em;margin:0;text-wrap:balance;font-variation-settings:"SOFT" 60}
+h1 em{font-style:normal;color:var(--w-tea)} h1 .d{color:var(--w-dinner)} h1 .s{color:var(--w-supper)}
+.mark{width:clamp(92px,21vw,176px);height:auto;display:block}
+.dek{grid-column:1/-1;font-size:21px;line-height:1.42;margin:8px 0 0;max-width:46ch}
+.byline{font:400 13px/1.4 var(--mono);color:var(--muted);margin-top:14px}
+h2{font:800 34px/1.04 var(--display);letter-spacing:-.01em;margin:52px 0 10px;text-wrap:balance}
+h2 .n{font:500 13px/1 var(--mono);color:var(--hot);display:block;letter-spacing:.1em;margin-bottom:10px}
+h3{font:600 20px/1.25 var(--display);margin:28px 0 6px}
+p{margin:0 0 16px}
+.lede::first-letter{font:900 72px/.8 var(--display);float:left;margin:6px 10px 0 0;color:var(--hot)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:26px 0 8px}
+.stats div{background:var(--card);padding:14px 12px}
+.stats b{display:block;font:900 clamp(28px,6vw,40px)/1 var(--display);color:var(--fg)}
+.stats b.t{color:var(--w-tea)} .stats b.d{color:var(--w-dinner)} .stats b.s{color:var(--w-supper)}
+.stats span{font:400 12px/1.35 var(--mono);color:var(--muted);display:block;margin-top:6px}
+@media (max-width:600px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.figure{margin:26px 0 30px}
+.fig-h{font:600 19px/1.25 var(--display);margin:0 0 4px}
+.fig-sub{font:400 13px/1.45 var(--mono);color:var(--muted);margin:0 0 12px}
+.src{font:400 12px/1.45 var(--mono);color:var(--muted);margin-top:10px}
+.chart{width:100%;position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--mono);fill:var(--fg)}
+.lab{font-size:12px}.lab.m{fill:var(--muted)}.lab.b{font-weight:500}.lab.s{font-size:11px}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font:400 12px/1.45 var(--mono);padding:8px 10px;border-radius:3px;max-width:270px;z-index:1000;transform:translate(-50%,calc(-100% - 12px));display:none}
+.tip b{font-weight:500}
+.controls{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.btn{font:500 12px/1 var(--mono);background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:8px 10px;cursor:pointer;min-height:36px}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.btn:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.mapgrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:820px){.mapgrid{grid-template-columns:1fr}}
+#map{height:clamp(460px,78vh,740px);border:1px solid var(--border);background:var(--sea);border-radius:2px;z-index:0}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font:400 12px/1.3 var(--mono);color:var(--muted);margin-top:8px;align-items:center}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.legend i.ln{width:18px;height:3px;border-radius:0;vertical-align:3px}
+.legend .ramp{display:inline-block;width:120px;height:10px;border-radius:2px;vertical-align:-1px;margin:0 6px}
+.side{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--hot);padding:12px 14px;font:400 13px/1.5 var(--mono)}
+.card.empty{border-left-color:var(--border);color:var(--muted)}
+.card b.h{font:600 18px/1.2 var(--display);display:block;margin-bottom:6px}
+.bars{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:3px 8px;align-items:center;margin-top:8px}
+.bars span.bar{height:10px;border-radius:1px;display:block}
+.search{position:relative;display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.search input{flex:1 1 220px;min-width:0;font:400 15px/1.2 var(--mono);padding:10px 12px;border:1px solid var(--border);border-radius:3px;background:var(--card);color:var(--fg)}
+.search input:focus{outline:2px solid var(--hot);outline-offset:1px}
+.sugg{position:absolute;left:0;right:0;top:100%;z-index:1200;background:var(--card);border:1px solid var(--border);border-top:0;max-height:280px;overflow:auto;font:400 13px/1.3 var(--mono);display:none}
+.sugg button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);color:var(--fg);padding:9px 12px;cursor:pointer;font:inherit}
+.sugg button:hover,.sugg button.on{background:var(--panel)}
+.sugg small{color:var(--muted)}
+.verdict{font:900 40px/1 var(--display);margin:4px 0 6px}
+.near .say{font:400 15px/1.45 var(--body);margin:8px 0 0}
+.pull{font:600 26px/1.25 var(--display);border-left:6px solid var(--hot);padding:4px 0 4px 18px;margin:30px 0}
+.note{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;font-size:16px;margin:22px 0}
+.note h3{margin-top:0}
+.meals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}
+.meals div{background:var(--card);border:1px solid var(--border);border-top:5px solid var(--hot);padding:12px 12px 10px;font-size:15px;line-height:1.45}
+.meals b{display:block;font:800 22px/1.1 var(--display);margin-bottom:4px}
+.meals small{display:block;font:400 12px/1.4 var(--mono);color:var(--muted);margin-bottom:6px}
+@media (max-width:600px){.meals{grid-template-columns:1fr}}
+table.t{width:100%;border-collapse:collapse;font:400 13px/1.35 var(--mono)}
+table.t th{text-align:left;font-weight:500;color:var(--muted);border-bottom:2px solid var(--fg);padding:6px 8px 6px 0;cursor:default}
+table.t th.sort{cursor:pointer;text-decoration:underline dotted}
+table.t td{border-bottom:1px solid var(--rule);padding:7px 8px 7px 0;vertical-align:middle}
+table.t td.num,table.t th.num{text-align:right;white-space:nowrap}
+.tablewrap{overflow-x:auto;max-height:520px;overflow-y:auto}
+.stack{display:flex;height:12px;min-width:90px;border-radius:1px;overflow:hidden}
+.stack span{display:block;height:100%}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.cta a{font:500 13px/1 var(--mono);text-decoration:none;border:1px solid var(--fg);padding:11px 14px;border-radius:3px}
+.cta a.p{background:var(--hot);border-color:var(--hot);color:#fff}
+footer{border-top:6px double var(--fg);margin-top:56px;padding-top:16px;font:400 13px/1.55 var(--mono);color:var(--muted)}
+footer p{margin:0 0 10px}
+.theme{position:fixed;right:12px;bottom:12px;z-index:1001}
+.leaflet-container{font:400 12px/1.4 var(--mono);background:var(--sea)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--fg);border-radius:3px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.leaflet-popup-content{margin:10px 12px;font:400 12.5px/1.45 var(--mono)}
+.leaflet-popup-content b.h{font:600 15px/1.2 var(--display);display:block;margin-bottom:4px}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--card) 85%,transparent)!important;color:var(--muted)!important;font-size:10px}
+.leaflet-control-attribution a{color:var(--fg)!important}
+.leaflet-bar a{background:var(--card);color:var(--fg);border-bottom-color:var(--border)}
+.leaflet-bar{border:1px solid var(--border)!important}
+.lyrBtn{background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:3px;font:600 12px/1 var(--mono);padding:8px 10px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.lyrBtn[aria-expanded="true"]{background:var(--fg);color:var(--bg)}
+.lyrPanel{background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:10px 12px 8px;margin-top:6px;width:240px;box-shadow:0 2px 10px rgba(0,0,0,.15);font:400 12px/1.3 var(--mono);max-height:min(62vh,500px);overflow:auto}
+.lyrPanel[hidden]{display:none}
+.lyrPanel .row{margin:0 0 9px}
+.lyrPanel label{display:flex;gap:6px;align-items:center;cursor:pointer;font-weight:600}
+.lyrPanel input[type=range]{width:100%;accent-color:var(--fg)}
+.lyrPanel select{font:400 12px var(--mono);background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:2px;padding:2px 4px;width:100%}
+.lyrPanel .sub{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:11px;margin-top:3px}
+.lyrPanel .sub span{flex:0 0 58px}
+.lyrPanel .hd{font:500 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:10px 0 7px;border-top:1px solid var(--rule);padding-top:9px}
+.lyrPanel .reset{font:400 11px var(--mono);color:var(--muted);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+.townL{font:500 11px/1 var(--mono);color:var(--fg);white-space:nowrap;text-shadow:0 0 3px var(--bg),0 0 3px var(--bg),0 0 2px var(--bg)}
+.townL i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--fg);margin-right:4px;vertical-align:1px}
+.townL.c{font-size:12.5px;font-weight:500}
+.youpin{width:16px;height:16px;border-radius:50%;background:var(--hot);border:3px solid var(--card);box-shadow:0 0 0 2px var(--fg)}
+@media print{.theme,.controls{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="kicker"><b>Data study</b><span>Dialect × food</span><span>United Kingdom</span></div>
+<header class="hero">
+  <h1><span class="d">Dinner,</span> <em>tea</em> or <span class="s">supper?</span></h1>
+  <svg class="mark" viewBox="-100 -100 200 200" aria-hidden="true"><g id="heroMark"></g></svg>
+  <p class="dek">What do you call your evening meal? I mapped {{survey.n|int}} answers to that question from the Our Dialects survey, drew the line where tea gives way to dinner, and asked whether dinner is taking over.</p>
+</header>
+<div class="byline">Dr Tristan Hotham · Independent researcher · 2026 · Survey answers: <a href="https://www.ourdialects.uk/maps/meal/">Our Dialects</a> (University of Manchester), aggregated and used with credit</div>
+
+<div class="stats">
+  <div><b>{{survey.n|int}}</b><span>answers placed on the map, {{survey.year_min|raw}} to {{survey.year_max|raw}}</span></div>
+  <div><b class="t">{{band.North.share.tea|pct0}}</b><span>of answers in the north of England say tea</span></div>
+  <div><b class="d">{{band.South.share.dinner|pct0}}</b><span>of answers in the south of England say dinner</span></div>
+  <div><b class="s">{{survey.share.supper|pct1}}</b><span>say supper, most of them older southerners</span></div>
+</div>
+
+<p class="lede">Ask someone in Lancashire what is for tea and they will tell you about the evening meal. Ask the same question in Surrey and you may be offered a cup and a biscuit. Britain has three words for the last proper meal of the day, and the choice says where you grew up, and perhaps how old you are, more clearly than almost anything else you say.</p>
+<p>The <a href="https://www.ourdialects.uk/maps/meal/">Our Dialects</a> project at the University of Manchester has asked people across the UK since {{survey.year_min|raw}} what they call their evening meal, with three options: dinner, tea or supper. Its public map holds {{survey.n_raw|int}} answers, each placed at the person's postcode district, with their age and the year they answered. I smoothed them into a map, drew the line where tea and dinner are level, and tested what really predicts the word: place, age, gender or year.</p>
+
+<h2><span class="n">01 · The map</span>Where the evening meal is tea</h2>
+<p>Brown means tea leads, blue means dinner leads, and the paler the colour the closer the split. The black line is the tea line: the line where the two words are level after smoothing. Search for a town, village or postcode district to see what people say there, or tap the map anywhere. Switch to the hexagons to see the counts behind the colour (only hexagons with at least {{meta.min_n|int}} answers are shown).</p>
+<div class="figure bleed">
+  <div class="search" role="search">
+    <input id="q" type="search" placeholder="What do they say near you? Try Clitheroe, Leeds or BB7" aria-label="Search for a town, village or postcode district" autocomplete="off">
+    <button class="btn" id="geo">Use my location</button>
+    <div class="sugg" id="sugg" role="listbox"></div>
+  </div>
+  <div class="controls" id="modebtns">
+    <button class="btn" data-mode="balance" aria-pressed="true"><i style="background:linear-gradient(90deg,var(--w-dinner),var(--w-tea))"></i>Tea or dinner</button>
+    <button class="btn" data-mode="lead" aria-pressed="false">Leading word</button>
+    <button class="btn" data-mode="supper" aria-pressed="false"><i style="background:var(--w-supper)"></i>Supper</button>
+    <button class="btn" id="bhex" aria-pressed="false">Hexagons with counts</button>
+    <button class="btn" id="bline" aria-pressed="true">Tea line</button>
+  </div>
+  <div class="mapgrid">
+    <div>
+      <div id="map" role="application" aria-label="Map of the words for the evening meal across the United Kingdom"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="side">
+      <div class="card near empty" id="near">Search above, use your location or tap the map to see what people call the evening meal there.</div>
+      <div class="card" style="border-left-color:var(--muted)"><b class="h">The whole map</b><div class="bars" id="natbars"></div><div style="color:var(--muted);margin-top:8px">{{survey.n|int}} answers, all years.</div></div>
+    </div>
+  </div>
+  <div class="src">Smoothing: a Gaussian kernel {{smoothing.cv_best_km|int}} km wide where answers are dense (chosen by cross-validation), widened smoothly to 24 or 32 km where they are sparse, and left blank where fewer than {{meta.min_n|int}} weighted answers are nearby. Survey answers © Our Dialects; aggregated here with credit, not republished. Hexagons {{hex.across_km|int}} km across. Place names: OS Open Names (OGL) and GeoNames.</div>
+</div>
+
+<h2><span class="n">02 · The tea line</span>North of the line, it is tea</h2>
+<p>The split is as clean as anything in British dialect. Across the three northern regions of England, {{band.North.share.tea|pct0}} of {{band.North.n|int}} answers say tea. Across London, the South East, the East of England and the South West, {{band.South.share.dinner|pct0}} of {{band.South.n|int}} say dinner. The Midlands are the borderland, split almost exactly down the middle: {{band.Midlands.share.tea|pct0}} tea and {{band.Midlands.share.dinner|pct0}} dinner.</p>
+<p>The tea line itself runs north from the Severn estuary past Gloucester and Worcester, swings round the west and north of Birmingham, which sits just on the dinner side, then heads east past Derby and Nottingham, with Leicester on the dinner side, to the Wash. Wales sits mostly on the tea side: {{nation.Wales.share.tea|pct0}} of {{nation.Wales.n|int}} Welsh answers say tea. Northern Ireland says dinner ({{nation.Northern Ireland.share.dinner|pct0}} of {{nation.Northern Ireland.n|int}}), and so, mostly, does Scotland ({{nation.Scotland.share.dinner|pct0}} of {{nation.Scotland.n|int}}), with Glasgow firmly dinner and the east coast closer to tea. Those three nations have far fewer answers than England, so their maps are broader brush.</p>
+<div class="figure">
+  <div class="fig-h">Going north through England, dinner gives way to tea</div>
+  <div class="fig-sub">Average smoothed share of each word in 50 km bands, from the south coast to the Scottish border.</div>
+  <div class="chart" id="prof"></div>
+</div>
+<p>London has the least tea on the map: only {{london.share.tea|pct0}} of {{london.n|int}} answers, against {{london.share.dinner|pct0}} dinner. Lancashire is one of the most tea: {{local.lancs_share.tea|pct0}} of {{local.lancs_n|int}}. The East Riding of Yorkshire ({{x_eryorks_tea}}) and Lancashire top the list of counties with at least 30 answers; Greater London and Hertfordshire are at the bottom, and Hertfordshire edges London for dinner ({{x_herts_dinner}}).</p>
+
+<h2><span class="n">03 · Three words</span>Dinner, tea and supper are three different meals</h2>
+<p>The argument is not really about the evening meal. It is about dinner. In the old pattern, still alive across the north, the Midlands and much of Wales, dinner is the main meal of the day, and it is eaten in the middle of the day. That is why schools have dinner ladies and why the midday break is dinner time. The evening meal is tea, a cooked meal eaten when people come home from work, and supper, if it happens at all, is a snack before bed. The Oxford English Dictionary puts it plainly: tea is "a light meal in the late afternoon, but locally in the U.K. (esp. northern) ... a cooked evening meal".</p>
+<div class="meals">
+  <div style="border-top-color:var(--w-dinner)"><b>Dinner</b><small>The main meal of the day</small>In the old pattern, at midday; in the south and among many younger people, in the evening, with lunch at midday.</div>
+  <div style="border-top-color:var(--w-tea)"><b>Tea</b><small>Late afternoon or evening</small>In the north, the Midlands and Wales, the cooked evening meal. In the south, a cup of tea and a light bite in the afternoon.</div>
+  <div style="border-top-color:var(--w-supper)"><b>Supper</b><small>Late evening</small>A light meal or snack before bed, or for some, especially older people in the south, the evening meal itself.</div>
+</div>
+<p>So a Lancashire family eating dinner at noon and tea at six and a Surrey family eating lunch at one and dinner at seven are on the same timetable with different names. The southern pattern, with dinner moved to the evening, started among the well off, who ate later and later from the eighteenth century onwards, and spread outwards. Kate Fox, in <em>Watching the English</em>, treats the words as a class marker as much as a regional one.</p>
+<div class="note"><b>A caveat.</b> The survey asks only one question: what do you call your evening meal? It does not ask what people call the midday meal, so the midday dinner described here comes from dictionaries and the literature, not from this data. Around Clitheroe, where it is dinner at noon and tea at teatime, the survey can show the tea ({{local.ribble_share.tea|pct0}} of {{local.ribble_n|int}} answers in the Ribble Valley) but not the dinner.</div>
+
+<h2><span class="n">04 · Region by region</span>Every region, every county</h2>
+<p>Every English region north of the Midlands has a tea majority of more than seven in ten. Every region south of it has a dinner majority, though the South West ({{region.South West.share.tea|pct0}} tea) is warmer to tea than the South East ({{region.South East.share.tea|pct0}}), with patches of tea in Somerset, Gloucestershire and Cornwall.</p>
+<div class="figure">
+  <div class="fig-h">The evening meal, region by region</div>
+  <div class="fig-sub">Share of answers giving each word, sorted by tea. Numbers are answers.</div>
+  <div class="chart" id="regc"></div>
+</div>
+<div class="figure">
+  <div class="controls" id="ctbtns"><button class="btn" data-ct="30" aria-pressed="true">Counties with 30+ answers</button><button class="btn" data-ct="10" aria-pressed="false">All with 10+</button></div>
+  <div class="tablewrap"><table class="t" id="ctt"></table></div>
+  <div class="src">Counties: ceremonial counties in England, preserved counties in Wales, council areas in Scotland, and Northern Ireland as one. Tap a column heading to sort. 95% interval for the tea share from the exact binomial test.</div>
+</div>
+
+<h2><span class="n">05 · Age and time</span>Is dinner taking over?</h2>
+<p>Younger people say dinner more often than older people, but only in some places. Across the south of England, {{x_south_dinner_young}} of answers from people aged 18 to 24 say dinner, against {{x_south_dinner_older}} from those aged 50 to 64. In a logistic regression that also allows for region, survey year and gender, the odds of saying dinner fall by a factor of {{model.age_by_band.South.or|f2}} for every ten years of age in the south (95% interval {{model.age_by_band.South.lo|f2}} to {{model.age_by_band.South.hi|f2}}, {{x_p_south}}). The Midlands show a smaller slope ({{model.age_by_band.Midlands.or|f2}}, {{x_p_mid}}) and so does Scotland ({{model.age_by_band.Scotland.or|f2}}, {{x_p_scot}}).</p>
+<p>The north does not move. There, {{x_north_dinner_young}} of 18 to 24 year olds and {{x_north_dinner_older}} of 50 to 64 year olds say dinner, and the age slope is indistinguishable from flat ({{model.age_by_band.North.or|f2}}, {{x_p_north}}). The difference between the north and south slopes is itself clear (likelihood ratio test, {{x_p_inter}}). Tea in the north looks as secure among teenagers as among their grandparents.</p>
+<div class="figure">
+  <div class="fig-h">Share saying dinner, by age</div>
+  <div class="fig-sub">Raw shares with 95% intervals, by age group (under 18, 18 to 24, 25 to 34, 35 to 49, 50 to 64, 65 and over), in the south, the Midlands and the north of England. Odds ratios are per ten years of age, from the regression.</div>
+  <div class="chart" id="agec"></div>
+</div>
+<p>An age gap is not proof of change: people may switch words as they grow up, leave home or move, and younger people in the south may have learned "dinner" from parents who already used it. The survey also runs for twelve years, so I checked whether dinner has grown from {{survey.year_min|raw}} to {{survey.year_max|raw}}. It has not. With answers reweighted to the same mix of region and age every year, dinner's share moves between {{year.std_dinner_min|pct0}} and {{year.std_dinner_max|pct0}} with no upward trend, and in the regression the odds of dinner, if anything, fall slightly with survey year ({{model.main.yr.or|f2}} a year, {{x_p_yr}}). Twelve years is short for a word to move, and the people answering in each year are not the same kind of sample, so this is weak evidence either way.</p>
+<div class="figure">
+  <div class="fig-h">Dinner by survey year</div>
+  <div class="fig-sub">Raw share (open circles) and share reweighted to the overall mix of region and age (filled), with answers per year below.</div>
+  <div class="chart" id="yearc"></div>
+</div>
+<p>Gender makes no difference: {{gender.female.share.tea|pct0}} of women and {{gender.male.share.tea|pct0}} of men say tea. Place does nearly all the work. Region on its own explains {{x_r2_region}} of what a model can explain about dinner against tea (pseudo R² {{model.pseudo_r2_region_only|f2}}); age, gender and year together add almost nothing (pseudo R² {{model.pseudo_r2_no_region|f3}} without region).</p>
+
+<h2><span class="n">06 · Supper</span>Supper is an older word, and a southern one</h2>
+<p>Supper is the minority answer: {{survey.count.supper|int}} answers, {{survey.share.supper|pct1}} of the total. It is commonest in the South West ({{region.South West.share.supper|pct1}}), the South East ({{region.South East.share.supper|pct1}}) and London ({{region.London.share.supper|pct1}}), and rarest across the north of England, where supper is the late snack. Its strongest pull is age. In the south, {{x_supper_old_south}} of answers from people aged 65 and over say supper, against {{x_supper_young_south}} of those aged 18 to 24, and across the UK the odds of supper rise by a factor of {{model.supper.age10.or|f2}} for every ten years of age ({{x_p_supage}}). Supper leads the smoothed map in only one small area, in Aberdeenshire, where {{x_aber_supper}} of {{x_aber_n}} answers say it.</p>
+
+<h2><span class="n">07 · Checks</span>Does it agree with YouGov?</h2>
+<p>In 2018 YouGov asked more than 42,000 adults in England <a href="https://yougov.com/en-gb/articles/20826-dinner-time-or-tea-time-it-depends-where-you-live">what they call their evening meal</a>: {{x_yg_dinner}} said dinner, {{x_yg_tea}} tea and {{x_yg_supper}} supper. The raw survey answers from England look quite different: {{england_check.raw.dinner|pct0}} dinner and {{england_check.raw.tea|pct0}} tea. The reason is who answered. A third of the English answers ({{england_check.nw_sample|pct0}}) come from the North West, the survey's home region, which holds {{england_check.nw_pop|pct0}} of England's people; London gives {{england_check.london_sample|pct0}} of answers but holds {{england_check.london_pop|pct0}} of the population.</p>
+<p>Reweight the adult answers in each region to the region's share of England's population (Census 2021) and the survey gives {{england_check.weighted.dinner|pct0}} dinner, {{england_check.weighted.tea|pct0}} tea and {{england_check.weighted.supper|pct0}} supper, within a few points of YouGov on every word. The county rankings agree too. YouGov's three most dinner counties, East Sussex, Essex and Kent, are 4th, 3rd and 7th of the {{counties.n_eng30|int}} English counties with at least 30 answers here; its three most tea counties, Greater Manchester, Tyne and Wear and Merseyside, are 12th, 3rd and 6th for tea.</p>
+<div class="figure">
+  <div class="tablewrap"><table class="t" id="ygt"></table></div>
+  <div class="src">YouGov figures as published (YouGov, 2018, 42,000+ adults in England). Survey reweighted: adults (18+) in each English region weighted to the region's share of England's usual resident population in the 2021 Census (ONS).</div>
+</div>
+<p>YouGov also split its answers by social grade. In the north, {{x_yg_nmc}} of middle-class people said tea and {{x_yg_nwc}} of working-class people; in the south, {{x_yg_smc}} of middle-class and {{x_yg_swc}} of working-class people said dinner. Class tilts the word a little; region tilts it a lot. The Our Dialects survey does not ask about class, so I cannot test that here. Its own site text reports London as 89% dinner and 3% tea, from an earlier count; the full {{survey.year_min|raw}} to {{survey.year_max|raw}} answers give {{london.share.dinner|pct0}} and {{london.share.tea|pct0}}.</p>
+
+<h2><span class="n">08 · Limits</span>What this map can and cannot say</h2>
+<p><b>Volunteers, not a sample.</b> Anyone could answer, and the survey is run from Manchester: {{x_north_all}} of all answers ({{england_check.north_sample|pct0}} of English ones) come from the north of England, and {{survey.share_under25|pct0}} come from people under 25 (median age {{survey.age_median|int}}). The smoothing follows the answers, so the map is sharpest where the survey was popular. Scotland, Wales and Northern Ireland have only {{nation.Scotland.n|int}}, {{nation.Wales.n|int}} and {{nation.Northern Ireland.n|int}} answers.</p>
+<p><b>One question, three options.</b> The survey asks about the evening meal only, with dinner, tea and supper to choose from. People who use two words, or say "lunch" and "dinner" but "tea" on Sundays, must pick one. There is no question about the midday meal.</p>
+<p><b>Where people live, roughly.</b> Each answer is placed at a postcode district, not an address, and the survey does not say whether that is where the person grew up.</p>
+<p><b>Copyright.</b> The answers belong to the Our Dialects project and are not openly licensed. I publish only counts for hexagons, counties, regions and postcode areas with at least {{meta.min_n|int}} answers, and smoothed maps. For the answers themselves, see the project's own map.</p>
+
+<div class="note" id="method">
+  <h3>How I did this</h3>
+  <p><b>Answers.</b> {{survey.n_raw|int}} answers from the Our Dialects meal map, read from the project's public web map in 2026, each with a postcode district point, survey year, age and gender. {{survey.outside_n|int}} answers from the Channel Islands and the Isle of Man were left out. Each answer was placed in a county and an ONS region.</p>
+  <p><b>Smoothing and the tea line.</b> Answers were counted on a 2 km grid by word and smoothed with a Gaussian kernel. The width was chosen by leave-one-cell-out prediction from 4 to 32 km; {{smoothing.cv_best_km|int}} km predicted best. Where fewer than {{meta.min_n|int}} weighted answers were within reach the width was widened smoothly towards 24 and 32 km, and cells still short were left blank. Each word's share is its smoothed count over the total, pulled very slightly towards the national share. The tea line is where the smoothed shares of tea and dinner are equal. Halving or doubling the kernel width leaves the leading word unchanged at {{smoothing.same_lead_half|pct0}} and {{smoothing.same_lead_double|pct0}} of answer locations.</p>
+  <p><b>Models.</b> Logistic regressions of dinner against tea (supper answers left out) on age in decades, survey year, gender and region, fitted for all answers and separately for each part of the UK; and of supper against everything else. The north against south difference in age slope is a likelihood ratio test of an age by area interaction. Year trends are also shown with each year's answers reweighted to the overall mix of region and age group.</p>
+  <p><b>YouGov check.</b> Adult answers from each English region weighted to the region's share of England's population in the 2021 Census, and compared with YouGov's published 2018 figures.</p>
+</div>
+<div class="cta">
+  <a class="p" href="https://doi.org/[[DOI]]">Read the paper</a>
+  <a href="https://github.com/Tristan-Hotham/dinner-or-tea">Data and code</a>
+  <a href="[[BLOG_URL]]">Blog post</a>
+  <a href="https://maps.tristanhotham.com/bread-rolls/">Barm, bap, cob or roll?</a>
+</div>
+
+<footer>
+  <p>Dr Tristan Hotham, data-led researcher of politics, the past, platforms and places. Independent researcher. Cite as: Hotham, T. 2026. Dinner, tea or supper? What Britain calls its evening meal. Zenodo. <a href="https://doi.org/[[DOI]]">https://doi.org/[[DOI]]</a></p>
+  <p>Survey answers: <a href="https://www.ourdialects.uk/maps/meal/">Our Dialects</a> meal map, © the Our Dialects project (University of Manchester). Used here for aggregate analysis with credit; the individual answers are not republished. Published figures: YouGov (2018), Oxford English Dictionary (2013).</p>
+  <p>Boundaries: Office for National Statistics (OGL v3.0), contains OS data © Crown copyright and database right 2026. Place names: OS Open Names (OGL v3.0) and GeoNames (CC BY 4.0). Region populations: ONS Census 2021 (OGL v3.0). Base map tiles © Esri. Map library: Leaflet.</p>
+  <p>My derived aggregates and text are released under CC BY 4.0, with the third-party credits above. Code is MIT.</p>
+  <p>I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.</p>
+  <p><a href="https://blog.tristanhotham.com/">blog.tristanhotham.com</a></p>
+</footer>
+</div>
+<div class="tip" id="tip"></div>
+<button class="btn theme" id="theme" aria-label="Toggle dark mode">◐</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/*DATA*/
+const NS = "http://www.w3.org/2000/svg";
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const fmt = n => Math.round(n).toLocaleString("en-GB");
+const pc = (x, d = 0) => (x * 100).toFixed(d) + "%";
+const tip = document.getElementById("tip");
+function showTip(h, x, y) { tip.innerHTML = h; tip.style.display = "block"; const w = tip.offsetWidth; x = Math.max(w / 2 + 8, Math.min(innerWidth - w / 2 - 8, x)); tip.style.left = x + scrollX + "px"; tip.style.top = y + scrollY + "px"; }
+function hideTip() { tip.style.display = "none"; }
+function hover(node, h) { node.style.cursor = "pointer"; node.setAttribute("tabindex", "0"); const s = () => { const r = node.getBoundingClientRect(); showTip(h, r.left + r.width / 2, r.top); }; node.addEventListener("pointerenter", s); node.addEventListener("focus", s); node.addEventListener("pointerleave", hideTip); node.addEventListener("blur", hideTip); node.addEventListener("click", e => { e.stopPropagation(); s(); }); }
+document.addEventListener("click", hideTip);
+const redraws = [];
+function resp(box, render) { let last = 0; const go = (force) => { const w = Math.max(280, Math.round(box.clientWidth)); if (!force && Math.abs(w - last) < 4) return; last = w; box.innerHTML = ""; render(w, w < 560); }; new ResizeObserver(() => go()).observe(box); redraws.push(() => go(true)); go(); }
+const lbl = (svg, x, y, s, cls = "lab", anchor = "start") => { const t = el("text", { x, y, class: cls, "text-anchor": anchor }, svg); t.textContent = s; return t; };
+const R = D.R;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const WORDS = ["dinner", "tea", "supper"];
+const wc = w => `var(--w-${w})`;
+const isDark = () => { const r = document.documentElement; return r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; };
+document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = isDark() ? "light" : "dark"; redraws.forEach(f => f()); window.__restyle && window.__restyle(); };
+const sbar = (d, t, s) => `<span class="stack"><span style="width:${d * 100}%;background:var(--w-dinner)"></span><span style="width:${s * 100}%;background:var(--w-supper)"></span><span style="width:${t * 100}%;background:var(--w-tea)"></span></span>`;
+function barsHTML(sh, cnt) { const max = Math.max(...WORDS.map(w => sh[w])); return WORDS.map(w => `<span>${w}</span><span class="bar" style="width:${(sh[w] / max * 100).toFixed(1)}%;background:${wc(w)}"></span><span>${pc(sh[w])}${cnt ? " (" + fmt(cnt[w]) + ")" : ""}</span>`).join(""); }
+
+/* hero mark: a plate, half dinner and half tea, with a dashed line across it */
+(() => { const g = document.getElementById("heroMark");
+  el("circle", { cx: 0, cy: 6, r: 84, fill: "var(--fg)", opacity: .08 }, g);
+  el("path", { d: "M0 -80 A80 80 0 0 0 0 80 Z", fill: "var(--w-dinner)" }, g);
+  el("path", { d: "M0 -80 A80 80 0 0 1 0 80 Z", fill: "var(--w-tea)" }, g);
+  el("circle", { cx: 0, cy: 0, r: 80, fill: "none", stroke: "var(--fg)", "stroke-width": 3 }, g);
+  el("circle", { cx: 0, cy: 0, r: 56, fill: "none", stroke: "var(--card)", "stroke-width": 3, opacity: .75 }, g);
+  el("line", { x1: 0, y1: -96, x2: 0, y2: 96, stroke: "var(--fg)", "stroke-width": 3.5, "stroke-dasharray": "9 6" }, g);
+})();
+document.getElementById("natbars").innerHTML = barsHTML(R.survey.share, R.survey.count);
+
+/* ===== map ===== */
+let flyTo = () => {};
+(() => {
+  const near = document.getElementById("near");
+  if (!window.L) { document.getElementById("map").innerHTML = '<p style="padding:16px;font:400 13px/1.5 var(--mono)">The map library did not load. The charts below still work.</p>'; return; }
+  const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/";
+  const ESRI_ATT = 'Tiles &copy; Esri · Answers: <a href="https://www.ourdialects.uk/maps/meal/">Our Dialects</a> (aggregated) · Boundaries: ONS · Places: OS Open Names, GeoNames';
+  const LYDEF = { base: "plain", hills: true, hillK: 40, labels: false, labelK: 80, towns: true, townLvl: 1, counties: false, overlay: 85 };
+  const LY = { ...LYDEF }; try { Object.assign(LY, JSON.parse(localStorage.getItem("meal_layers") || "{}")); } catch (e) {}
+  const saveLY = () => { try { localStorage.setItem("meal_layers", JSON.stringify(LY)); } catch (e) {} };
+  let mode = "balance", showHex = false, showLine = true;
+  const map = L.map("map", { preferCanvas: true, scrollWheelZoom: false, zoomSnap: .25, minZoom: 5, maxZoom: 13 }).fitBounds([[50.0, -7.6], [58.6, 1.8]]);
+  map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
+  map.on("focus", () => map.scrollWheelZoom.enable()); map.on("blur", () => map.scrollWheelZoom.disable());
+  ["hills:250", "ov:300", "bd:390", "hx:410", "ln:420", "labels:450", "names:620", "you:640"].forEach(s => { const [n, z] = s.split(":"); map.createPane(n); map.getPane(n).style.zIndex = z; });
+  ["hills", "ov", "ln", "labels", "names"].forEach(n => map.getPane(n).style.pointerEvents = "none");
+  let base = null, hills = null, labels = null;
+  const C = {}; const col = v => C[v] || (C[v] = css(v));
+  const ov = L.imageOverlay("map/balance.png", D.bounds, { pane: "ov", opacity: LY.overlay / 100, interactive: false }).addTo(map);
+  const hexR = L.canvas({ pane: "hx", padding: .3 }), lnR = L.svg({ pane: "ln" }), bdR = L.canvas({ pane: "bd", padding: .3 });
+  const hexLayer = L.layerGroup(), lineLayer = L.layerGroup().addTo(map), bdLayer = L.layerGroup(), townLayer = L.layerGroup(), you = L.layerGroup().addTo(map);
+  function setTiles() {
+    [base, labels, hills].forEach(l => { if (l) map.removeLayer(l); });
+    const t = isDark() ? "Dark" : "Light";
+    const url = LY.base === "relief" ? ESRI + "World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}" : LY.base === "satellite" ? ESRI + "World_Imagery/MapServer/tile/{z}/{y}/{x}" : `${ESRI}Canvas/World_${t}_Gray_Base/MapServer/tile/{z}/{y}/{x}`;
+    base = L.tileLayer(url, { maxZoom: 16, maxNativeZoom: LY.base === "relief" ? 13 : 16, attribution: ESRI_ATT }).addTo(map);
+    hills = L.tileLayer(ESRI + "Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}", { maxZoom: 16, pane: "hills" });
+    labels = L.tileLayer(`${ESRI}Canvas/World_${t}_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 16, pane: "labels" });
+    apply();
+  }
+  function apply() {
+    if (!base) return;
+    if (LY.hills) { hills.addTo(map); hills.setOpacity(Math.min(1, .1 + LY.hillK / 120)); } else map.removeLayer(hills);
+    if (LY.labels) { labels.addTo(map); labels.setOpacity(LY.labelK / 100); } else map.removeLayer(labels);
+    if (LY.towns) townLayer.addTo(map); else map.removeLayer(townLayer);
+    if (LY.counties) bdLayer.addTo(map); else map.removeLayer(bdLayer);
+    ov.setOpacity((showHex ? .25 : 1) * LY.overlay / 100);
+    placeTowns();
+  }
+  /* county outlines, clickable */
+  const ctab = D.ctab;
+  D.counties.forEach(([name, nation, rings]) => { const p = L.polygon(rings, { renderer: bdR, weight: .8, fill: true, fillOpacity: 0 });
+    p.on("click", e => { const c = ctab[name]; if (!c) return; L.popup().setLatLng(e.latlng).setContent(`<b class="h">${esc(name)}</b>${fmt(c[0])} answers` + (c[1] != null ? `<div class="bars">${barsHTML({ dinner: c[1], tea: c[2], supper: c[3] })}</div>` : "<br>Fewer than 10 answers: not shown")).openOn(map); });
+    p.addTo(bdLayer); });
+  function styleBd() { bdLayer.eachLayer(l => l.setStyle({ color: col("--fg"), opacity: .55 })); }
+  /* towns */
+  function placeTowns() { townLayer.clearLayers(); if (!LY.towns) return;
+    const z = map.getZoom(), bb = map.getBounds().pad(.05), boxes = [];
+    const lim = z < 6 + (LY.townLvl === 2 ? -.5 : LY.townLvl === 0 ? 1 : 0) ? 3 : z < 8.5 + (LY.townLvl === 2 ? -1.5 : LY.townLvl === 0 ? 1 : 0) ? 2.5 : 2;
+    let n = 0;
+    for (const [name, lat, lon, k] of D.towns) { if (k < lim || !bb.contains([lat, lon])) continue;
+      const pt = map.latLngToContainerPoint([lat, lon]), bx = [pt.x - 4, pt.y - 8, pt.x + 12 + name.length * (k === 3 ? 7.6 : 6.8), pt.y + 8];
+      if (boxes.some(o => bx[0] < o[2] && bx[2] > o[0] && bx[1] < o[3] && bx[3] > o[1])) continue; boxes.push(bx);
+      L.marker([lat, lon], { pane: "names", interactive: false, keyboard: false, icon: L.divIcon({ className: "townL" + (k === 3 ? " c" : ""), html: `<i></i>${esc(name)}`, iconSize: null, iconAnchor: [3, 6] }) }).addTo(townLayer);
+      if (++n > (LY.townLvl === 2 ? 160 : LY.townLvl === 0 ? 45 : 90)) break; } }
+  map.on("zoomend moveend", placeTowns);
+  /* hexagons */
+  const hexes = D.hexes.map(h => { const [ring, n, d, t, s, county] = h; const m = L.polygon(ring, { renderer: hexR, weight: .6 });
+    m.bindPopup(`<b class="h">Around ${esc(county)}</b>${fmt(n)} answers in this ${R.hex.across_km} km hexagon<div class="bars">${barsHTML({ dinner: d / n, tea: t / n, supper: s / n }, { dinner: d, tea: t, supper: s })}</div>`);
+    m.addTo(hexLayer); return { h, m }; });
+  function styleHex() { hexes.forEach(({ h, m }) => { const [ring, n, d, t, s] = h; let fill, op;
+    if (mode === "supper") { fill = col("--w-supper"); op = Math.min(1, s / n / .2) * .9; }
+    else { const tt = t / (t + d || 1); fill = tt >= .5 ? col("--w-tea") : col("--w-dinner"); op = .15 + .75 * Math.min(1, Math.abs(tt - .5) / .35); }
+    m.setStyle({ fillColor: fill, fillOpacity: Math.max(.05, op), color: col("--bg"), weight: .6, opacity: .9 }); }); }
+  function drawLine() { lineLayer.clearLayers(); if (!showLine) return;
+    D.lines.forEach(([kind, a, b, ll]) => { const tea = kind === "tea_line";
+      L.polyline(ll, { renderer: lnR, color: col("--bg"), weight: tea ? 6 : 4, opacity: .8, interactive: false }).addTo(lineLayer);
+      L.polyline(ll, { renderer: lnR, color: tea ? col("--line") : col("--w-supper"), weight: tea ? 2.6 : 1.6, dashArray: tea ? null : "5 4", interactive: false }).addTo(lineLayer); }); }
+  function legend() { const L2 = [];
+    if (mode === "balance") L2.push(`<span>dinner leads<span class="ramp" style="background:linear-gradient(90deg,var(--w-dinner),var(--mid),var(--w-tea))"></span>tea leads</span>`);
+    else if (mode === "lead") WORDS.forEach(w => L2.push(`<span><i style="background:${wc(w)}"></i>${w} leads</span>`));
+    else L2.push(`<span>supper<span class="ramp" style="background:linear-gradient(90deg,transparent,var(--w-supper))"></span>20% or more</span>`);
+    if (showLine) L2.push(`<span><i class="ln" style="background:var(--line)"></i>Tea line: tea and dinner level</span>`);
+    if (showLine && mode !== "balance") L2.push(`<span><i class="ln" style="background:var(--w-supper)"></i>Supper overtakes</span>`);
+    document.getElementById("legend").innerHTML = L2.join(""); }
+  function setMode(m) { mode = m; ov.setUrl(`map/${m}.png`); document.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m)); styleHex(); legend(); }
+  document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  const bh = document.getElementById("bhex"), bl = document.getElementById("bline");
+  bh.onclick = () => { showHex = !showHex; bh.setAttribute("aria-pressed", showHex); showHex ? hexLayer.addTo(map) : map.removeLayer(hexLayer); apply(); legend(); };
+  bl.onclick = () => { showLine = !showLine; bl.setAttribute("aria-pressed", showLine); drawLine(); legend(); };
+  /* layers panel */
+  (function layerControl() {
+    const Ctl = L.Control.extend({ options: { position: "topright" }, onAdd() {
+      const d = L.DomUtil.create("div"); L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d);
+      d.innerHTML = `<button class="lyrBtn" aria-expanded="false">Map layers</button>
+<div class="lyrPanel" hidden>
+ <div class="row"><label style="font-weight:600">Base map</label><div class="sub"><select data-k="base" aria-label="Base map"><option value="plain">Plain grey</option><option value="relief">Shaded relief</option><option value="satellite">Satellite</option></select></div></div>
+ <div class="row"><label><input type="checkbox" data-k="hills"> Hill shading</label><div class="sub"><span>strength</span><input type="range" data-k="hillK" min="10" max="100" step="5" aria-label="Hill shading strength"></div></div>
+ <div class="row"><label><input type="checkbox" data-k="towns"> Town names</label><div class="sub"><span>how many</span><select data-k="townLvl" aria-label="How many town names"><option value="0">Cities only</option><option value="1">Some</option><option value="2">Lots</option></select></div></div>
+ <div class="row"><label><input type="checkbox" data-k="labels"> Map labels (roads, places)</label><div class="sub"><span>strength</span><input type="range" data-k="labelK" min="20" max="100" step="5" aria-label="Map label strength"></div></div>
+ <div class="row"><label><input type="checkbox" data-k="counties"> County boundaries</label></div>
+ <div class="hd">The evening meal</div>
+ <div class="row"><label style="font-weight:600">Colour</label><div class="sub"><span>strength</span><input type="range" data-k="overlay" min="10" max="100" step="5" aria-label="Colour strength"></div></div>
+ <button class="reset">Reset layers</button>
+</div>`;
+      return d; } });
+    map.addControl(new Ctl());
+    const box = map.getContainer(), btn = box.querySelector(".lyrBtn"), pan = box.querySelector(".lyrPanel");
+    btn.onclick = () => { const o = pan.hidden; pan.hidden = !o; btn.setAttribute("aria-expanded", o); };
+    const sync = () => pan.querySelectorAll("[data-k]").forEach(i => { const k = i.dataset.k; if (i.type === "checkbox") i.checked = LY[k]; else i.value = LY[k]; });
+    pan.querySelectorAll("[data-k]").forEach(i => i.addEventListener(i.type === "range" ? "input" : "change", () => {
+      const k = i.dataset.k; LY[k] = i.type === "checkbox" ? i.checked : (k === "base" ? i.value : +i.value);
+      if (k === "hillK") LY.hills = true; if (k === "labelK") LY.labels = true; if (k === "townLvl") LY.towns = true;
+      sync(); saveLY(); if (k === "base") setTiles(); else apply(); }));
+    pan.querySelector(".reset").onclick = () => { Object.assign(LY, LYDEF); saveLY(); sync(); setTiles(); };
+    sync();
+  })();
+  L.control.scale({ imperial: false, position: "bottomright" }).addTo(map);
+
+  /* ===== what do they say near you ===== */
+  let GRID = null, gridP = null;
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const loadGrid = () => gridP || (gridP = fetch("map/grid.json").then(r => r.json()).then(g => { GRID = { ...g, d: b64(g.dinner), t: b64(g.tea), n: b64(g.n) }; return GRID; }));
+  function at(lat, lon) { const g = GRID; const i = Math.floor((lon - g.lon0) / g.dlon), j = Math.floor((lat - g.lat0) / g.dlat);
+    if (i < 0 || j < 0 || i >= g.nx || j >= g.ny) return null;
+    const best = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]].map(([a, b]) => [i + a, j + b]).filter(([a, b]) => a >= 0 && b >= 0 && a < g.nx && b < g.ny).map(([a, b]) => (b * g.nx + a)).find(k => g.d[k] !== 255);
+    if (best === undefined) return null; return { d: g.d[best] / 100, t: g.t[best] / 100, n: g.n[best] }; }
+  const lines = { tea: ["It's tea round here.", "Your tea is the evening meal. Locally, dinner is often the midday meal, and supper a late snack."],
+    dinner: ["It's dinner round here.", "The evening meal is dinner, and the midday meal is usually lunch."],
+    close: ["It could go either way.", "Tea and dinner are close to level here: you are near the tea line."],
+    supper: ["Supper, for some.", "Supper is unusually common here."] };
+  function distKm(a, b, c, d) { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return 6371 * Math.hypot(x, y); }
+  function county(lat, lon) { let best = null; D.counties.forEach(([name, nat, rings]) => { if (best) return; for (const ring of rings) { let ins = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [yi, xi] = ring[i], [yj, xj] = ring[j]; if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) ins = !ins; } if (ins) { best = name; return; } } }); return best; }
+  async function show(lat, lon, name, district) {
+    await loadGrid(); const v = at(lat, lon); you.clearLayers();
+    L.marker([lat, lon], { pane: "you", icon: L.divIcon({ className: "", html: '<div class="youpin"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }) }).addTo(you);
+    near.className = "card near";
+    const cn = county(lat, lon), c = cn && ctab[cn];
+    let dline = ""; if (district && district.length > 3) dline = `<br>Postcode district ${esc(district[0])}: ${fmt(district[3])} answers, ${pc(district[5] / district[3])} tea, ${pc(district[4] / district[3])} dinner, ${pc(district[6] / district[3])} supper.`;
+    else if (district) dline = `<br>Postcode district ${esc(district[0])}: fewer than 10 answers, so the smoothed figure above is the better guide.`;
+    if (!v) { near.style.borderLeftColor = col("--border"); near.innerHTML = `<b class="h">${esc(name)}</b>Too few answers nearby to say. The survey is thin here.` + (c && c[1] != null ? `<br>${esc(cn)} as a whole: ${pc(c[2])} tea, ${pc(c[1])} dinner (${fmt(c[0])} answers).` : "") + dline; return; }
+    const s = Math.max(0, 1 - v.d - v.t), key = Math.abs(v.t - v.d) < .1 ? "close" : v.t > v.d ? "tea" : "dinner";
+    const w = key === "close" ? (v.t > v.d ? "tea" : "dinner") : key;
+    near.style.borderLeftColor = col(`--w-${w}`);
+    near.innerHTML = `<b class="h">${esc(name)}</b><div class="verdict" style="color:var(--w-${w})">${key === "close" ? "Tea or dinner" : w[0].toUpperCase() + w.slice(1)}</div>
+      <div class="bars">${barsHTML({ dinner: v.d, tea: v.t, supper: s })}</div>
+      <div style="color:var(--muted);margin-top:6px">Smoothed share of answers near here (about ${v.n >= 254 ? "250 or more" : fmt(v.n)} weighted answers).${c && c[1] != null ? `<br>${esc(cn)}: ${pc(c[2])} tea, ${pc(c[1])} dinner, ${pc(c[3])} supper (${fmt(c[0])} answers).` : ""}${dline}</div>
+      <p class="say"><b>${lines[key][0]}</b> ${lines[key][1]}${s >= .1 ? " " + lines.supper[1] : ""}</p>`;
+  }
+  flyTo = (lat, lon, name, district) => { map.setView([lat, lon], Math.max(map.getZoom(), 8.5)); show(lat, lon, name, district); };
+  map.on("click", e => { const { lat, lng } = e.latlng; const nt = D.towns.reduce((b, t) => { const d = distKm(lat, lng, t[1], t[2]); return d < b[0] ? [d, t] : b; }, [1e9, null]);
+    show(lat, lng, nt[0] < 6 ? "Near " + nt[1][0] : `${lat.toFixed(2)}°N, ${Math.abs(lng).toFixed(2)}°${lng < 0 ? "W" : "E"}`, null); });
+  document.getElementById("geo").onclick = () => { if (!navigator.geolocation) return; near.className = "card near empty"; near.textContent = "Finding you…";
+    navigator.geolocation.getCurrentPosition(p => flyTo(p.coords.latitude, p.coords.longitude, "Where you are"), () => { near.textContent = "Location not available. Try searching instead."; }, { timeout: 10000 }); };
+  window.__restyle = () => { for (const k in C) delete C[k]; setTiles(); styleHex(); drawLine(); styleBd(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", window.__restyle);
+  window.__show = show; window.__mode = setMode; window.__hex = () => bh.click(); window.__map = map;
+  setTiles(); styleHex(); drawLine(); styleBd(); legend();
+})();
+
+/* ===== search box ===== */
+(() => { const q = document.getElementById("q"), sg = document.getElementById("sugg"); let PL = null, plP = null, items = [], on = -1;
+  const loadPl = () => plP || (plP = fetch("map/places.json").then(r => r.json()).then(j => PL = j));
+  const norm = s => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, "").trim();
+  q.addEventListener("focus", loadPl);
+  function render() { sg.innerHTML = items.map((it, i) => `<button role="option" class="${i === on ? "on" : ""}" data-i="${i}">${esc(it.label)} <small>${esc(it.sub)}</small></button>`).join(""); sg.style.display = items.length ? "block" : "none";
+    sg.querySelectorAll("button").forEach(b => b.onclick = () => pick(+b.dataset.i)); }
+  function pick(i) { const it = items[i]; if (!it) return; sg.style.display = "none"; q.value = it.label; flyTo(it.lat, it.lon, it.label + (it.sub ? ", " + it.sub : ""), it.district); }
+  q.addEventListener("input", async () => { const s = norm(q.value); on = -1; if (s.length < 2) { items = []; render(); return; }
+    const out = []; const pcm = s.replace(/ /g, "").toUpperCase();
+    if (/^[A-Z]{1,2}[0-9]/.test(pcm)) D.districts.forEach(d => { if (d[0].startsWith(pcm.slice(0, 4))) out.push({ label: d[0], sub: "postcode district", lat: d[1], lon: d[2], district: d, rank: d[0] === pcm ? 0 : 1 }); });
+    await loadPl();
+    for (const [name, lat, lon, k, cty] of PL) { const n = norm(name); if (n.startsWith(s)) out.push({ label: name, sub: cty || "", lat, lon, rank: (n === s ? 0 : 2) - k / 10 }); if (out.length > 400) break; }
+    items = out.sort((a, b) => a.rank - b.rank).slice(0, 12); render(); });
+  q.addEventListener("keydown", e => { if (e.key === "ArrowDown") { on = Math.min(items.length - 1, on + 1); render(); e.preventDefault(); } else if (e.key === "ArrowUp") { on = Math.max(0, on - 1); render(); e.preventDefault(); } else if (e.key === "Enter") { pick(on < 0 ? 0 : on); e.preventDefault(); } else if (e.key === "Escape") { sg.style.display = "none"; } });
+  document.addEventListener("click", e => { if (!e.target.closest(".search")) sg.style.display = "none"; });
+})();
+
+/* ===== north to south profile ===== */
+resp(document.getElementById("prof"), (W, nar) => {
+  const d = R.lines.england_profile.filter(r => r.n >= 50), H = nar ? 260 : 300, m = { l: 44, r: nar ? 62 : 80, t: 14, b: 40 };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Share of each word by distance north in England" }, document.getElementById("prof"));
+  const xs = d.map(r => r.northing_km), X = v => m.l + (v - xs[0]) / (xs[xs.length - 1] - xs[0]) * (W - m.l - m.r), Y = v => H - m.b - v * (H - m.t - m.b);
+  for (let t = 0; t <= 1 + 1e-9; t += .25) { el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: "var(--rule)" }, svg); lbl(svg, m.l - 6, Y(t) + 4, pc(t), "lab m s", "end"); }
+  el("line", { x1: m.l, x2: W - m.r, y1: Y(.5), y2: Y(.5), stroke: "var(--muted)", "stroke-dasharray": "3 4" }, svg);
+  [[xs[0], "South coast"], [xs[xs.length - 1], "Scottish border"]].forEach(([v, s], i) => lbl(svg, X(v), H - m.b + 16, s, "lab m s", i ? "end" : "start"));
+  lbl(svg, (W + m.l - m.r) / 2, H - 6, "Distance north, 50 km bands", "lab m s", "middle");
+  const ends = [];
+  WORDS.forEach(w => { el("path", { d: "M" + d.map(r => `${X(r.northing_km)} ${Y(r[w])}`).join("L"), fill: "none", stroke: wc(w), "stroke-width": w === "supper" ? 2 : 3.2 }, svg);
+    d.forEach(r => { const c = el("circle", { cx: X(r.northing_km), cy: Y(r[w]), r: 3.4, fill: wc(w) }, svg); hover(c, `<b>${w}, ${r.northing_km.toFixed(0)} km north (about ${r.lat.toFixed(1)}°N)</b><br>${pc(r[w])} of answers (smoothed)<br>${fmt(r.n)} answers in this band`); });
+    ends.push([w, Y(d[d.length - 1][w])]); });
+  ends.sort((a, b) => a[1] - b[1]); for (let i = 1; i < ends.length; i++) if (ends[i][1] - ends[i - 1][1] < 13) ends[i][1] = ends[i - 1][1] + 13;
+  ends.forEach(([w, y]) => lbl(svg, W - m.r + 8, y + 4, w, "lab b s"));
+});
+
+/* ===== regions ===== */
+resp(document.getElementById("regc"), (W, nar) => {
+  const regs = Object.entries(R.region).sort((a, b) => b[1].share.tea - a[1].share.tea), rowH = 30, m = { l: nar ? 112 : 200, r: 56, t: 6, b: 8 }, H = regs.length * rowH + m.t + m.b;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Share of each word by region" }, document.getElementById("regc"));
+  const X = v => m.l + v * (W - m.l - m.r), short = s => s.replace("Yorkshire and The Humber", "Yorks and Humber").replace("East of England", "East").replace("Northern Ireland", "N. Ireland");
+  regs.forEach(([name, r], i) => { const y = m.t + i * rowH; lbl(svg, m.l - 8, y + 19, nar ? short(name) : name, "lab", "end"); let x = 0;
+    ["tea", "supper", "dinner"].forEach(w => { const v = r.share[w]; const rc = el("rect", { x: X(x), y: y + 6, width: Math.max(0, X(x + v) - X(x) - .5), height: rowH - 12, fill: wc(w) }, svg);
+      hover(rc, `<b>${esc(name)}</b><br>${w}: ${pc(r.share[w])} (${fmt(r.count[w])} of ${fmt(r.n)})`); if (v > .1) { const t = lbl(svg, X(x) + 5, y + 19, pc(v), "lab s"); t.style.fill = "#fff"; } x += v; });
+    lbl(svg, W - m.r + 6, y + 19, fmt(r.n), "lab m s"); });
+});
+
+/* ===== county table ===== */
+(() => { const t = document.getElementById("ctt"), btns = document.getElementById("ctbtns"); let min = 30, key = "tea", dir = -1;
+  const rows = Object.entries(D.ctab).filter(([c, v]) => v[1] != null).map(([c, v]) => ({ county: c, n: v[0], dinner: v[1], tea: v[2], supper: v[3], region: v[4] }));
+  function draw() { const rs = rows.filter(r => r.n >= min).sort((a, b) => (a[key] > b[key] ? 1 : a[key] < b[key] ? -1 : 0) * dir);
+    const th = (k, s, cls = "") => `<th class="sort ${cls}" data-k="${k}">${s}${key === k ? (dir < 0 ? " ▼" : " ▲") : ""}</th>`;
+    t.innerHTML = `<thead><tr>${th("county", "County")}${th("n", "Answers", "num")}${th("tea", "Tea", "num")}${th("dinner", "Dinner", "num")}${th("supper", "Supper", "num")}<th></th></tr></thead><tbody>` +
+      rs.map(r => `<tr><td>${esc(r.county)}<br><span style="color:var(--muted);font-size:11px">${esc(r.region)}</span></td><td class="num">${fmt(r.n)}</td><td class="num" style="color:var(--w-tea);font-weight:500">${pc(r.tea)}</td><td class="num" style="color:var(--w-dinner);font-weight:500">${pc(r.dinner)}</td><td class="num">${pc(r.supper)}</td><td style="width:30%">${sbar(r.dinner, r.tea, r.supper)}</td></tr>`).join("") + "</tbody>";
+    t.querySelectorAll("th.sort").forEach(h => h.onclick = () => { const k = h.dataset.k; if (key === k) dir = -dir; else { key = k; dir = k === "county" ? 1 : -1; } draw(); }); }
+  btns.querySelectorAll("[data-ct]").forEach(b => b.onclick = () => { min = +b.dataset.ct; btns.querySelectorAll("[data-ct]").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); });
+  draw(); })();
+
+/* ===== age ===== */
+resp(document.getElementById("agec"), (W, nar) => {
+  const bands = ["South", "Midlands", "North"], G = R.age.groups, cw = nar ? W : W / 3, ch = 210, H = (nar ? 3 : 1) * (ch + 34);
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Share saying dinner by age group in three parts of England" }, document.getElementById("agec"));
+  bands.forEach((b, i) => { const a = R.age.by_band[b], M = R.model.age_by_band[b]; const ox = nar ? 0 : i * cw, oy = (nar ? i : 0) * (ch + 34) + 22;
+    const m = { l: 40, r: 10 }, X = j => ox + m.l + (j + .5) / G.length * (cw - m.l - m.r), Y = v => oy + ch - 34 - v * (ch - 46);
+    lbl(svg, ox + m.l, oy - 6, `${b}: odds ratio ${M.or.toFixed(2)}`, "lab b s");
+    for (let t = 0; t <= 1 + 1e-9; t += .25) { el("line", { x1: ox + m.l, x2: ox + cw - m.r, y1: Y(t), y2: Y(t), stroke: "var(--rule)" }, svg); if (!i || nar) lbl(svg, ox + m.l - 5, Y(t) + 4, pc(t), "lab m s", "end"); }
+    el("path", { d: "M" + a.map((g, j) => `${X(j)} ${Y(g.dinner)}`).join("L"), fill: "none", stroke: "var(--w-dinner)", "stroke-width": 2, opacity: .5 }, svg);
+    a.forEach((g, j) => { el("line", { x1: X(j), x2: X(j), y1: Y(g.dinner_lo), y2: Y(g.dinner_hi), stroke: "var(--w-dinner)", "stroke-width": 2.5, opacity: .45 }, svg);
+      const c = el("circle", { cx: X(j), cy: Y(g.dinner), r: 5.5, fill: "var(--w-dinner)", stroke: "var(--bg)", "stroke-width": 1.5 }, svg);
+      hover(c, `<b>${b}, ${g.group}</b><br>${pc(g.dinner)} say dinner, ${pc(g.tea)} tea, ${pc(g.supper)} supper<br>${fmt(g.n)} answers; 95% interval for dinner ${pc(g.dinner_lo)} to ${pc(g.dinner_hi)}`);
+      lbl(svg, X(j), oy + ch - 18, ({ "Under 18": "<18", "18 to 24": "18", "25 to 34": "25", "35 to 49": "35", "50 to 64": "50", "65 and over": "65+" })[g.group], "lab m s", "middle"); }); });
+});
+
+/* ===== year ===== */
+resp(document.getElementById("yearc"), (W, nar) => {
+  const d = R.year.rows, H = 270, m = { l: 44, r: 14, t: 10, b: 58 };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Share saying dinner by survey year" }, document.getElementById("yearc"));
+  const X = j => m.l + (j + .5) / d.length * (W - m.l - m.r), Y = v => m.t + (1 - (v - .2) / .6) * (H - m.t - m.b);
+  for (let t = .2; t <= .8 + 1e-9; t += .1) { el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: "var(--rule)" }, svg); lbl(svg, m.l - 6, Y(t) + 4, pc(t), "lab m s", "end"); }
+  el("path", { d: "M" + d.map((r, j) => `${X(j)} ${Y(r.std_dinner)}`).join("L"), fill: "none", stroke: "var(--w-dinner)", "stroke-width": 2.5 }, svg);
+  d.forEach((r, j) => { el("circle", { cx: X(j), cy: Y(r.share_dinner), r: 4.5, fill: "none", stroke: "var(--w-dinner)", "stroke-width": 1.5 }, svg);
+    const c = el("circle", { cx: X(j), cy: Y(r.std_dinner), r: 5, fill: "var(--w-dinner)" }, svg);
+    hover(c, `<b>${r.year}</b><br>Dinner: ${pc(r.share_dinner)} raw, ${pc(r.std_dinner)} reweighted<br>${fmt(r.n)} answers, ${pc(r.share_north)} from the north of England, median age ${r.median_age}`);
+    lbl(svg, X(j), H - m.b + 16, nar ? "'" + String(r.year).slice(2) : String(r.year), "lab m s", "middle");
+    lbl(svg, X(j), H - m.b + 32, fmt(r.n), "lab m s", "middle"); });
+  lbl(svg, m.l, H - 6, "Answers per year shown under each year", "lab m s");
+});
+
+/* ===== YouGov table ===== */
+(() => { const t = document.getElementById("ygt"), Y = R.yougov.england, E = R.england_check;
+  t.innerHTML = `<thead><tr><th>England</th><th class="num">YouGov 2018</th><th class="num">Survey, raw</th><th class="num">Survey, reweighted</th></tr></thead><tbody>` +
+    WORDS.map(w => `<tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${wc(w)};margin-right:6px"></span>${w}</td><td class="num">${pc(Y[w])}</td><td class="num">${pc(E.raw[w])}</td><td class="num" style="font-weight:500">${pc(E.weighted[w])}</td></tr>`).join("") +
+    `<tr><td style="color:var(--muted)">Answers</td><td class="num" style="color:var(--muted)">42,000+</td><td class="num" style="color:var(--muted)">${fmt(R.nation.England.n)}</td><td class="num" style="color:var(--muted)">${fmt(E.adult_n)} adults</td></tr></tbody>`; })();
+</script>
+/*FULLSCREEN*/
+</body>
+</html>
